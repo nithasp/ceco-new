@@ -1,0 +1,284 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Importing Bootstrap SCSS file. */
+@import "~bootstrap/scss/bootstrap";
+@import "./assets/fonts/fonts.scss";
+
+/* Importing SwiperJS. */
+@import "~swiper/scss";
+@import "~swiper/scss/pagination";
+@import "~swiper/scss/navigation";
+@import "~swiper/css/effect-fade";
+
+body {
+  font-family: tempnou, PlayfairDisplay-Medium, Prompt-Regular;
+}
+
+.inner {
+  margin: 0 auto;
+  width: 96%;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #fc4852 !important;
+  color: #fff;
+}
+
+.accordion-body {
+  background: #ede9e9;
+}
+
+.accordion-button:not(.collapsed)::after {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-item {
+  border-width: 0 0 1px 0;
+}
+
+.add-newline-json {
+  white-space: pre-line !important;
+}
+
+.ceco-sticker {
+  position: relative;
+  &:before {
+    position: absolute;
+    top: 7%;
+    left: -1%;
+    content: "";
+    height: 10%;
+    width: 30px;
+    border-right: 6px solid #fc4852;
+  }
+  &:after {
+    position: absolute;
+    top: 7%;
+    left: 0;
+    content: "";
+    height: 21%;
+    width: 30px;
+    border-right: 6px solid #fc4852;
+  }
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.flex-center2 {
+  display: flex;
+  align-items: center;
+}
+
+.service {
+  .content {
+    p.indent {
+      text-indent: 30px;
+    }
+  }
+}
+.ceco-line {
+  display: flex;
+  position: relative;
+  right: 10px;
+  .line {
+    position: relative;
+    border-right: 6px solid #fc4852;
+    width: auto;
+    margin: 15px 10px 0 10px;
+  }
+  .line1 {
+    height: 47%;
+  }
+  .line2 {
+    height: 92%;
+    right: 5px;
+  }
+}
+
+.contact-icon.facebook {
+  svg {
+    box-shadow: 0 5px 3px rgb(0 0 0 / 35%);
+    border-radius: 50%;
+  }
+}
+
+// Anchor Points
+.anchor-point {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+}
+#about-us-anchor-point {
+  top: -65px;
+  left: 0;
+}
+#job-anchor-point {
+  top: -65px;
+  left: 0;
+}
+#contact-us-anchor-point {
+  top: -80px;
+  left: 0;
+}
+#services-anchor-point {
+  top: -60px;
+  left: 0;
+}
+
+@media (min-width: 1680px) {
+  .container {
+    max-width: 1600px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  #about-us-anchor-point {
+    top: -50px;
+    left: 0;
+  }
+  #services-anchor-point {
+    top: -305px;
+    left: 0;
+  }
+  #job-anchor-point {
+    top: -305px;
+    left: 0;
+  }
+  #contact-us-anchor-point {
+    top: -320px;
+    left: 0;
+  }
+}
+
+//Resolution more than 1920px
+@media (min-width: 1921px) {
+  #contact-us {
+    // Contact Us icon must be styled in global css
+    .contact-icon {
+      width: 7vh;
+      height: 7vh;
+      box-shadow: 0 10px 3px rgb(0 0 0 / 35%);
+    }
+    svg {
+      width: 4.5vh;
+      height: auto;
+    }
+  }
+
+  footer {
+    // Footer icon must be styled in global css
+    .contact-icon {
+      width: 6vh !important;
+      height: 6vh !important;
+      box-shadow: 0 0.3vh 3px rgb(0 0 0 / 15%) !important;
+
+      .contact-icon-wrapper {
+        padding: 1vh 0 !important;
+      }
+    }
+    svg {
+      width: 2.5vh;
+      height: auto;
+    }
+    .footer-item2 {
+      .item {
+        grid-template-columns: 8.5vh 1fr !important;
+        margin-bottom: 1vh !important;
+      }
+    }
+    .footer-item3 {
+      i-bs.filetype-pdf {
+        svg {
+          width: 9vh;
+        }
+      }
+    }
+  }
+
+  #job {
+    // Job icon must be styled in global css
+    .contact-icon {
+      width: 7vh;
+      height: 7vh;
+      box-shadow: 0 10px 3px rgb(0 0 0 / 35%);
+    }
+    svg {
+      width: 3.2vh;
+      height: auto;
+    }
+    .accordion-body {
+      padding: 2vh;
+      .responsibility {
+        margin: 2vh 0;
+      }
+      ul {
+        padding-left: 3.8vh;
+      }
+      p {
+        margin-bottom: 1.3vh;
+      }
+    }
+    .accordion-item {
+      font-size: 1.8vh;
+      .accordion-button {
+        font-size: 1.8vh;
+        padding: 1.8vh 2vh;
+        &:after {
+          width: 3vh;
+          height: 2vh;
+          background-size: 2vh;
+        }
+      }
+    }
+  }
+
+  // Services
+  .service {
+    ul {
+      padding-left: 3.2vh;
+      margin: 1vh 0;
+    }
+    .indent {
+      text-indent: 3vh !important;
+    }
+    .content {
+      p {
+        margin: 1.5vh 0;
+      }
+    }
+  }
+
+  // Anchor Point
+  #about-us-anchor-point {
+    top: -7vh;
+    left: 0;
+  }
+  #services-anchor-point {
+    top: -7vh;
+    left: 0;
+  }
+  #job-anchor-point {
+    top: -7.5vh;
+    left: 0;
+  }
+  #contact-us-anchor-point {
+    top: -8vh;
+    left: 0;
+  }
+}
+
+// Style Only IOS
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  a.btn {
+    -webkit-appearance: unset !important;
+  }
+}

@@ -1,0 +1,36 @@
+<section id="previous-works">
+  <div class="inner">
+    <div class="thead">
+      <div class="row">
+        <div class="col col-3">{{ "previous_work.title1" | translate }}</div>
+        <div class="col col-7">{{ "previous_work.title2" | translate }}</div>
+        <div class="col col-2">{{ "previous_work.title3" | translate }}</div>
+      </div>
+    </div>
+    <div class="tbody">
+      <ng-container *ngIf="companies">
+        <div class="work" *ngFor="let company of companies.attributes.company">
+          <div class="row">
+            <div class="title col-3">{{ company.name }}</div>
+            <div class="content col-9">
+              <div class="row prev-work" *ngFor="let work of company.work">
+                <div class="description col-9">
+                  <span class="arrow-icon">›</span>
+                  {{ work.description }}
+                </div>
+                <div class="year col-3">
+                  <span>{{ work.year }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!companies">
+        <div class="work no-work">
+          <div class="col-12"><h1>-</h1></div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</section>

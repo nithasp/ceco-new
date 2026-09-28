@@ -1,0 +1,173 @@
+nav {
+  .inner {
+    display: grid;
+    grid-template-columns: 0.4fr 1fr;
+    align-items: center;
+  }
+}
+nav.show-menu {
+  background-color: rgba(225, 225, 225, 0.95) !important;
+  .nav-link {
+    color: black;
+  }
+}
+.navbar-light {
+  .navbar-toggler {
+    color: rgba(0, 0, 0, 1);
+    border-color: rgba(0, 0, 0, 1);
+    &:focus {
+      box-shadow: 0 0 0 0.1rem;
+    }
+  }
+}
+ul.menu {
+  li {
+    padding: 0 1vw;
+  }
+  a {
+    white-space: nowrap;
+  }
+}
+.nav-item {
+  a {
+    color: #fff;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+    line-height: 32px;
+    font-size: 24px;
+  }
+}
+.nav-item.line-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 3px 13px 0 0;
+  .line {
+    background: white;
+    width: 2px;
+    height: 24px;
+  }
+}
+.languages-icons {
+  .nav-item:first-child {
+    margin-right: 0vw;
+  }
+}
+.nav-link {
+  &:hover {
+    color: rgba(0, 0, 0, 0.7) !important;
+  }
+}
+
+.ceco-nav {
+  background-color: transparent !important;
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.navbar.active {
+  background-color: rgba(225, 225, 225, 0.95) !important;
+  .ceco-logo {
+    width: 50px;
+    height: 50px;
+  }
+  a {
+    color: #000;
+  }
+  .nav-item.line-wrapper {
+    .line {
+      background: black;
+      box-shadow: 0px 4px 4px rgb(0 0 0 / 40%);
+    }
+  }
+  .nav-link:hover,
+  .nav-link:focus,
+  .nav-link:active {
+    color: black !important;
+  }
+}
+.navbar .nav-link:hover,
+.navbar .nav-link:focus,
+.navbar .nav-link:active {
+  color: white !important;
+}
+
+.ceco-logo {
+  width: 90px;
+  height: 90px;
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.navbar-toggler {
+  width: 45px;
+  height: 30px;
+}
+.flag-logo {
+  width: 45px;
+  height: 47px;
+}
+.navbar-item1-2 {
+  display: none;
+}
+
+@media (max-width: 1282px) {
+  nav {
+    .inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    .languages-icons {
+      margin-left: 40px;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  nav {
+    .inner {
+      display: block;
+    }
+  }
+  .languages-icons {
+    display: none;
+  }
+  .navbar-item1-2 {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// Large Resolution
+@media (min-width: 1921px) {
+  .navbar {
+    padding: 1vh !important;
+    .ceco-logo {
+      width: 9.5vh !important;
+      height: 9.5vh !important;
+    }
+    .nav-item {
+      a {
+        font-size: 2.7vh !important;
+      }
+    }
+    .nav-item.line-wrapper {
+      margin: -0.5vh 1.2vh 0 0.8vh !important;
+      .line {
+        width: 0.2vh !important;
+        height: 2.8vh !important;
+      }
+    }
+    ul.menu {
+      li {
+        padding: 0 1.5vw !important;
+      }
+    }
+
+    .languages-icons {
+      position: relative;
+      top: 0.5vh;
+    }
+  }
+  .navbar.active {
+    .ceco-logo {
+      width: 5.5vh !important;
+      height: 5.5vh !important;
+    }
+  }
+}

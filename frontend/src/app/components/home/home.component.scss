@@ -1,0 +1,430 @@
+section {
+  position: relative;
+}
+section.active {
+  animation: FadeInUp 0.4s;
+  animation-timing-function: ease-in-out;
+}
+.group-item-wrapper {
+  overflow: hidden;
+  padding: 33px 0;
+  .inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1.8vw;
+  }
+}
+
+.group-item {
+  position: relative;
+  height: 11rem;
+  width: 100%;
+  z-index: 0;
+  color: #fff;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  background-position: center center;
+  background-size: cover;
+
+  &:hover {
+    transform: scale(1.18);
+    z-index: 1;
+  }
+  .text {
+    position: absolute;
+    bottom: 0;
+    text-align: center;
+    font-size: 2rem;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.95);
+    padding: 0 1vw;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    span {
+      position: relative;
+      top: -2px;
+    }
+  }
+
+  @media (min-width: 991px) {
+    height: 23rem;
+
+    .text {
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.group-item:not(:nth-child(4)) {
+  margin-bottom: 2rem;
+
+  @media (min-width: 991px) {
+    margin-bottom: 0;
+  }
+}
+
+#about-us {
+  background-image: url("../../../assets/About_New_Wallpaper.png");
+  background-size: cover;
+}
+
+.title-container {
+  .title {
+    margin-top: 1rem;
+    font-size: 3rem;
+    color: #fc4852;
+  }
+
+  .desc {
+    font-size: 1.3rem;
+    color: #000;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.contact {
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px -2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+
+  .contact-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    margin: 0 2rem 1.5rem 0;
+  }
+
+  .contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border: none;
+    border-radius: 50%;
+    outline: none;
+    box-shadow: 0 5px 3px rgb(0 0 0 / 35%);
+    text-align: center;
+    line-height: 36px;
+
+    .contact-icon-wrapper {
+      padding: 16px 0;
+      display: inline-block;
+      line-height: 36px;
+    }
+  }
+  .contact-icon.facebook {
+    box-shadow: none;
+  }
+
+  .contact-details {
+    display: flex;
+
+    flex: 1;
+    padding-left: 2rem;
+  }
+  .contact-details.facebook {
+    a {
+      text-decoration: none;
+      color: black;
+    }
+  }
+
+  i-bs {
+    color: #fc4852;
+  }
+
+  @media (min-width: 991px) {
+    flex-direction: row;
+
+    .contact-container {
+      margin-bottom: 0;
+    }
+  }
+}
+
+#job {
+  background: url("../../../assets/wallpaper2.png") no-repeat;
+  height: 60vh;
+  background-size: cover;
+  color: #fff;
+  text-align: center;
+
+  .job-content {
+    height: 100%;
+  }
+
+  button {
+    background: #fc4852;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 76px;
+    color: #fff;
+    width: 170px;
+  }
+}
+
+#about-us {
+  padding: 100px 0;
+  .title-container {
+    margin-top: -2vw;
+    .desc {
+      font-size: 1.3rem;
+      line-height: 45px;
+      margin-top: 2vw;
+    }
+  }
+  .ceco-line {
+    right: 0px;
+  }
+  .line1 {
+    height: 60%;
+  }
+  .line2 {
+    height: 92%;
+    right: 10px;
+  }
+}
+#our-standard {
+  background: url("../../../assets/Our_Standard_New_Wallpaper2.png") no-repeat;
+  background-size: cover;
+  .row {
+    padding-right: 0 !important;
+  }
+  .title-container {
+    padding-right: 7rem;
+  }
+  .desc {
+    li {
+      margin: 20px 0;
+    }
+  }
+}
+#recently-projects {
+  .recently-projects-title {
+    padding-left: 0 !important;
+  }
+  .ceco-line {
+    margin-right: 0rem;
+  }
+  .line1 {
+    height: 40%;
+  }
+  .line2 {
+    right: 9px;
+  }
+}
+#contact-us {
+  overflow: hidden;
+  .ceco-line {
+    margin-right: 0rem;
+  }
+  .line1 {
+    height: 40%;
+  }
+  .line2 {
+    right: 9px;
+  }
+}
+
+@media (max-width: 1400px) {
+  .contact-container {
+    margin: 0 1rem 1.5rem 0 !important;
+  }
+}
+@media (max-width: 1200px) {
+  .contact {
+    flex-direction: column !important;
+  }
+  .contact-container {
+    width: 50% !important;
+  }
+}
+@media (max-width: 992px) {
+  .group-item-wrapper {
+    .inner {
+      grid-template-columns: 1fr;
+    }
+  }
+  #our-standard {
+    .row {
+      flex-direction: column-reverse;
+      padding: 0 !important;
+    }
+    .title-container {
+      padding: 2rem !important;
+    }
+    .desc {
+      font-size: 1rem !important;
+    }
+  }
+  #recently-projects {
+    .recently-projects-title {
+      padding-left: 1rem !important;
+    }
+    .ceco-line {
+      margin-right: 0;
+    }
+  }
+  #contact-us {
+    .ceco-line {
+      margin-right: 0;
+    }
+    .contact-us-title {
+      padding-left: 1rem !important;
+    }
+  }
+  #about-us {
+    .desc {
+      font-size: 1rem !important;
+      line-height: 35px !important;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .contact-container {
+    width: 100% !important;
+  }
+}
+
+@keyframes FadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+}
+
+// Large Resolution
+@media (min-width: 1921px) {
+  #group-item-section {
+    padding: 3.5vh 0;
+    .group-item {
+      height: 40vh;
+
+      .text {
+        font-size: 3.5vh;
+        margin-bottom: 3.5vh;
+      }
+    }
+  }
+  #about-us {
+    padding: 10.5vh 0;
+    .ceco-line .line {
+      border-right: 0.7vh solid #fc4852;
+      margin: 1vh 1.2vh 0 0.1vh;
+    }
+    .title-container {
+      margin-top: 1vh;
+      padding: 1vh 3vh 0 7vh !important;
+      .title {
+        font-size: 5vh;
+        margin: 1vh 0 0 1vh;
+      }
+      .desc {
+        font-size: 2.3vh;
+        line-height: 4.5vh;
+      }
+    }
+  }
+  #our-standard {
+    .inner {
+      .row {
+        padding: 10.5vh 0 !important;
+      }
+    }
+    .title-container {
+      margin-top: 1vh;
+      padding: 1vh 3vh 0 9vh !important;
+      .title {
+        font-size: 5vh;
+        margin: 1vh 0 2vh -2vh;
+      }
+      .desc {
+        font-size: 2.3vh;
+        line-height: 4.5vh;
+      }
+    }
+  }
+  #recently-projects {
+    padding: 3vh 0;
+
+    .recently-projects-title {
+      padding-bottom: 4vh !important;
+    }
+    .ceco-line .line {
+      border-right: 0.7vh solid #fc4852;
+      margin: 1vh 1.2vh 0 0.1vh;
+    }
+    .title-container {
+      margin-top: 1vh;
+      .title {
+        font-size: 5vh;
+        margin: 1vh 0 0 1vh;
+      }
+      .desc {
+        font-size: 2.3vh;
+        line-height: 4.5vh;
+      }
+    }
+  }
+  #job {
+    .h1 {
+      font-size: 4.2vh;
+      margin-bottom: 1vh;
+    }
+
+    p {
+      font-size: 1.8vh;
+    }
+
+    button {
+      width: auto;
+      font-size: 2.2vh;
+      padding: 0.8vh 5vh;
+      margin-top: 6vh !important;
+    }
+  }
+  #contact-us {
+    padding: 6vh 0 !important;
+    .ceco-line .line {
+      border-right: 0.7vh solid #fc4852;
+      margin: 1vh 1.2vh 0 0.1vh;
+    }
+    .title-container {
+      margin-top: 1vh;
+      .title {
+        font-size: 5vh;
+        margin: 1vh 0 0 1vh;
+      }
+      .desc {
+        font-size: 2.3vh;
+        line-height: 4.5vh;
+      }
+    }
+
+    .contact {
+      padding: 3vh 0 !important;
+      box-shadow: 0vh 0.1vh 0.6vh rgb(0 0 0 / 25%),
+        0vh 0.1vh 1vh rgb(0 0 0 / 25%);
+      border-radius: 4vh;
+    }
+    .contact-details {
+      font-size: 1.7vh;
+    }
+  }
+
+  #map {
+    margin-bottom: 5vh !important;
+  }
+
+  .service-content {
+    ul {
+      padding-left: 4vh;
+    }
+  }
+}

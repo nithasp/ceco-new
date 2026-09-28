@@ -1,0 +1,112 @@
+{
+  "navbar": {
+    "item1": "Home",
+    "item2": "Service",
+    "item3": "About",
+    "item4": "Career",
+    "item5": "Contact"
+  },
+  "home_page": {
+    "carousel": {
+      "title": "Welcome to Collective Engineering Co.,Ltd.",
+      "content": "29th Years of High voltage solution provider."
+    },
+    "group_items": {
+      "item1": "Installation",
+      "item2": "Design",
+      "item3": "Testing & Commissioning",
+      "item4": "Maintenance"
+    },
+    "about_us": {
+      "title": "About Us",
+      "content": "Collective Engineering Co., Ltd. was founded by Mr. Narongtham Karnjananukoolpong on November 15, 1995. Currently managed by Mr. Arnontwat Karnjananukoolpong. We are providing high voltage consulting, design and calculations in electrical engineering, installation, testing and commissioning and preventive maintenance for electrical system of industrial plants, power plants, electricity sub-station (Substation), private facilities, national electricity facilities in Thailand and overseas."
+    },
+    "our_standard": {
+      "title": "Our Standard",
+      "item1": "Quick response and close communication with customers.",
+      "item2": "Standardized equipment and documentation.",
+      "item3": "Well-trained engineer teams.",
+      "item4": "Actual Site Experienced.",
+      "item5": "Market price competitive.",
+      "item6": "Cost and Budget controlling.",
+      "item7": "Working on highly safety and accident prevention."
+    },
+    "recently_projects": {
+      "title": "Recently Projects",
+      "content": ""
+    },
+    "join_us": {
+      "title": "Join Us",
+      "content": "We welcome potential people who are ready to grow steadily with us.",
+      "button": "Apply"
+    }
+  },
+  "job_page": {
+    "header1": "Join Our Team!",
+    "header2": "Attaching your application or resume to be considered.",
+    "section": "Human Resource Section",
+    "telephone": "Call",
+    "job_content": {
+      "title": "Job Openings"
+    }
+  },
+  "service_page": {
+    "title": "Other Services",
+    "installation_title": "Installation",
+    "design_title": "Design",
+    "commissioning_title": "Commissioning",
+    "maintenance": "Maintenance"
+  },
+  "commissioning_page": {
+    "header1": "Testing and Commissioning",
+    "header2": "Service and Experiences",
+    "content": "<p class='indent'>Our testing and commissioning services can high-voltage electrical equipment and system in substations, power plants with voltages up to 500kV to ensure that field testing complies with International Standards (IEEE) or customer requirements. This testing and commissioning service are included visual check, individual testing, commissioning testing, relay and protection testing. The test result will be summited by standard test report.</p><p class='indent'>Our engineers have a long experience in all aspects of high-voltage commissioning to deliver reliable equipment testing results. The expertise of our engineers and technicians combined with project management system, enables us to provide professional testing services internationally.</p><p>Our services such as:</p><ul>  <li>Substation Equipment testing in AIS & GIS.</li>  <li>Ensure the healthiness of Components to be installed.</li>  <li>Pre-commissioning & commissioning assistance.</li>  <li>End-to-end test & commissioning between substations.</li>  <li>    Post commissioning support & coordination with LDC/NDC for data acquisition.  </li></ul>"
+  },
+  "installation_page": {
+    "header1": "High Voltage equipment installation",
+    "header2": "Service and Experiences",
+    "content": "<p class=''>We are professional team that can install equipment for high-voltage systems in power plants, substation comprehensively.</p><p>Our services such as:</p><ul>  <li>Laying Transmission and control cable.</li>  <li>Switch yard equipment installation.</li>  <li>Control room equipment installation.</li>  <li>Procurement Engineering.</li>  <li>Erection Supervision.</li>  <li>Specialized Partners and Manufacturer’s Supervisor.</li></ul><p class='indent'>By our experience, High-voltage equipment can be installed in accordance with the global standards and customer’s requirements under a limited time. By our service, our customers can run the project continuously and smoothly.</p>"
+  },
+  "design_page": {
+    "header1": "Engineering and Design",
+    "header2": "Service and Experiences",
+    "content": "<p class='indent'>We have experienced engineer teams, including software that can design high-voltage electrical systems, protection systems, and circuit drawings of substations up to 115kV. Our engineering team is ready and able to Design-Test-Modify on-site parallelly to save customer’s cost and time.</p><p>Our services such as:</p><ul><li>Substation Design up to 115kV</li><li>Power System Studies like Load flow, Short Circuit, Relay co-ordination, Harmonic Analysis, Arc Flash, Motor Acceleration.</li><li>Illumination Design for Substations and Industrial Plants.</li><li>Control & Relay Panel Design.</li><li>Control & Instrumentation Design</li></ul>"
+  },
+  "maintenance_page": {
+    "header1": "Maintenance",
+    "header2": "Service and Experiences",
+    "content": "<p class='indent'>Annual maintenance and preventive maintenance are especially important to prevent unexpected power failures that will cause loss of productivity or may have an accident. We are pleased to offer a complete solution for inspection and maintenance of high voltage systems in factories, private substations and national substations.</p><p>Our services such as:</p><ul><li>Thermal scan</li><li>Individual testing</li><li>Relay and Protection testing</li><li>Fire alarm system testing</li><li>lightning protection testing</li><li>Earth Leakage testing</li><li>Reenergized and overall system testing</li><li>Cleaning and reassembly checking</li><li>Repair and Replacement</li><li>Periodical assessment of healthiness for various electrical installations.</li><li>System stability & Reliability checks for electrical installation.</li><li>Retrofitting and refurbishment of switchgears and CRPs</li><li>We provide high quality Service, Overhauling & maintenance of all types of HV / LV Circuit Breakers</li><li>Manpower assistance for short term requirements.</li></ul>"
+  },
+  "previous_work": {
+    "title1": "Companies that have worked with",
+    "title2": "Previous work",
+    "title3": "Years"
+  },
+  "contact_us": {
+    "title": "Contact Us",
+    "content": "If you have any questions about our services Or how we can help your company, please call or fill out the form below. to make sure to contact the right person You can send suggestions, comments or inquiries about the service. and knowledge of electrical systems to CECO Please complete the details in the fields below. for quick convenience We will contact you back as soon as possible.",
+    "address": {
+      "title": "Address",
+      "content": "105/36 Moo 7 Khlong Nueng,\nAmphoe Khlong Luang, Chang Wat Pathum Thani, Thailand 12120"
+    },
+    "telephone": {
+      "title": "Telephone",
+      "content": "+66 (2) 902 9712"
+    },
+    "email": {
+      "title": "Email",
+      "content": "info@ceco.co.th",
+      "content2": "hr@ceco.co.th"
+    },
+    "fax": {
+      "title": "Fax",
+      "content": "+66 (2) 902 9173"
+    }
+  },
+  "footer": {
+    "content": "High voltage system specialist with more than 28 years experiences.",
+    "download_title": "To know more about the company\nIt can be downloaded below.",
+    "download_button": "Download"
+  },
+  "copyright": "Copyright© 2021 All Rights Reserved."
+}

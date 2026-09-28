@@ -1,0 +1,112 @@
+{
+  "navbar": {
+    "item1": "Home",
+    "item2": "Service",
+    "item3": "About",
+    "item4": "Career",
+    "item5": "Contact"
+  },
+  "home_page": {
+    "carousel": {
+      "title": "ยินดีต้อนรับสู่ CECO",
+      "content": "บริษัท คอลเลคทีฟ เอ็นจิเนียริ่ง จำกัด ก้าวสู่ปีที่ 29 ผู้ให้บริการด้านวิศวกรรมไฟฟ้าแรงดันสูงครบวงจร"
+    },
+    "group_items": {
+      "item1": "Installation",
+      "item2": "Design",
+      "item3": "Testing & Commissioning",
+      "item4": "Maintenance"
+    },
+    "about_us": {
+      "title": "About Us",
+      "content": "บริษัท คอลเลคทีฟ เอ็นจิเนียริ่ง จำกัด ก่อตั้งโดยนาย ณรงค์ธรรม กาญจนานุกูลพงศ์ เมื่อวันที่ 15 พฤศจิกายน 1995 ปัจจุบัน บริหารงานโดย คุณอานนท์วัฒน์ กาญจนานุกูลพงศ์ ให้บริการเกี่ยวกับไฟฟ้าแรงดันสูง, ให้คำปรึกษา ออกแบบคำนวณทางวิศวกรรมไฟฟ้า (Engineering Design), การติดตั้ง (Installation) การทดสอบตรวจสอบ (Testing and Commissioning) และตรวจสอบบำรุงรักษาระบบไฟฟ้า (Preventive Maintenance) ของโรงงานอุตสาหกรรม, โรงไฟฟ้า, สถานีไฟฟ้าย่อย (Substation) ของเอกชน ภาครัฐ ทั้งในประเทศไทย และต่างประเทศ"
+    },
+    "our_standard": {
+      "title": "Our Standard",
+      "item1": "การตอบสนองที่รวดเร็วและการประสานงานอย่างใกล้ชิดกับลูกค้า",
+      "item2": "เครื่องมือและการจัดทำเอกสารที่ได้มาตรฐาน",
+      "item3": "ทีมวิศวกรที่มีความชำนาญ",
+      "item4": "วิศวกรมีประสบการณ์ในสถานที่จริง",
+      "item5": "ราคาที่สมเหตุผลในตลาดที่แข่งขันสูง",
+      "item6": "การควบคุมต้นทุนและงบประมาณของโครงการ",
+      "item7": "ปฏิบัติงานโดยเน้นความปลอดภัยและการป้องกันอุบัติเหตุ"
+    },
+    "recently_projects": {
+      "title": "Recently Projects",
+      "content": ""
+    },
+    "join_us": {
+      "title": "ร่วมงานกับเรา",
+      "content": "ยินดีต้อนรับบุคลากรที่มีศักยภาพที่พร้อมร่วมกันเติบโตอย่างมั่นคงไปกับเรา",
+      "button": "สมัครงาน"
+    }
+  },
+  "job_page": {
+    "header1": "ร่วมทีมกับเรา",
+    "header2": "ส่งใบสมัครงานหรือเรซูเม่เพื่อพิจารณาที่",
+    "section": "แผนกทรัพยากรบุคคล",
+    "telephone": "โทร",
+    "job_content": {
+      "title": "ตำแหน่งงานที่เปิดรับสมัคร"
+    }
+  },
+  "service_page": {
+    "title": "บริการอื่นๆ",
+    "installation_title": "การติดตั้ง",
+    "design_title": "การออกแบบ",
+    "commissioning_title": "การทดสอบตรวจสอบ",
+    "maintenance": "การบำรุงรักษา"
+  },
+  "commissioning_page": {
+    "header1": "การทดสอบตรวจสอบ",
+    "header2": "การบริการและประสบการณ์",
+    "content": "<p class='indent'>การให้บริการของเราเพื่อทดสอบตรวจสอบอุปกรณ์ไฟฟ้าและระบบไฟฟ้าแรงสูงในสถานีไฟฟ้าย่อย โรงไฟฟ้า ที่มีแรงดันไฟฟ้าสูงถึง 500kV เพื่อให้แน่ใจว่าการทดสอบภาคสนามมีผลเป็นไปตามมาตรฐานสากล (IEEE) หรือข้อกำหนดของลูกค้า โดยจัดทำเป็นเอกสารรายงานผล การบริการทดสอบตรวจสอบนี้ครอบคลุมถึงการทดสอบสภาพของอุปกรณ์ การทดสอบเฉพาะอุปกรณ์ การทดสอบรีเลย์และระบบป้องกัน และการทดสอบระบบโดยรวม</p><p class='indent'>วิศวกรของเรา มีประสบการณ์อันยาวนานในการทดสอบการใช้งานระบบไฟฟ้าแรงสูงทุกด้านเพื่อส่งมอบผลการทดสอบอุปกรณ์ที่เชื่อถือได้ ความเชี่ยวชาญของวิศวกรและช่างเทคนิคของเรา รวมกับระบบการจัดการโครงการ ทำให้เราสามารถให้บริการทดสอบอย่างมืออาชีพในระดับสากล</p><p>การบริการของเรา เช่น :</p><ul>  <li>Substation Equipment testing in AIS & GIS.</li>  <li>Ensure the healthiness of Components to be installed.</li>  <li>Pre-commissioning & commissioning assistance.</li>  <li>End-to-end test & commissioning between substations.</li>  <li>    Post commissioning support & coordination with LDC/NDC for data acquisition.  </li></ul>"
+  },
+  "installation_page": {
+    "header1": "การติดตั้งอุปกรณ์สำหรับระบบไฟฟ้าแรงดันสูง",
+    "header2": "การบริการและประสบการณ์",
+    "content": "<p class=''>เราคือทีมงานมืออาชีพ ที่สามารถติดตั้งอุปกรณ์สำหรับระบบไฟฟ้าแรงดันสูงในโรงไฟฟ้า  สถานีไฟฟ้าย่อย ได้อย่างครบวงจร</p><p>การบริการของเรา เช่น :</p><ul>  <li>Laying Transmission and control cable.</li>  <li>Switch yard equipment installation.</li>  <li>Control room equipment installation.</li>  <li>Procurement Engineering.</li>  <li>Erection Supervision.</li>  <li>Specialized Partners and Manufacturer’s Supervisor.</li></ul><p class='indent'>  ด้วยประสบการณ์ของเรา  สามารถติดตั้งอุปกรณ์ระบบไฟฟ้าแรงดันสูงได้ถูกต้องตามมาตรฐานและข้อกำหนดของลูกค้า  ภายใต้กรอบเวลาที่จำกัด  เพื่อให้ลูกค้าของเราสามารถดำเนินโครงการได้อย่างต่อเนื่องและราบรื่น</p>"
+  },
+  "design_page": {
+    "header1": "งานวิศวกรรมและการออกแบบระบบไฟฟ้าแรงดันสูง",
+    "header2": "การบริการและประสบการณ์",
+    "content": "<p class='indent'>เรามีทีมวิศวกรที่มีประสบการณ์ รวมถึง Software ที่สามารถออกแบบระบบไฟฟ้าแรงดันสูง ระบบป้องกัน การเขียนแบบวงจรของสถานีไฟฟ้าย่อยในขนาดไม่เกิน 115kV ทีมวิศวกรของเรามีความพร้อมและสามารถออกแบบ-ทดสอบ-แก้ไขปรับปรุง ณ สถานที่ใช้งานจริงไปพร้อมกันได้ เพื่อประหยัดเวลาและค่าใช้จ่ายของลูกค้า</p><p>การบริการของเรา เช่น :</p><ul><li>Substation Design up to 115kV</li><li>Power System Studies like Load flow, Short Circuit, Relay co-ordination, Harmonic Analysis, Arc Flash, Motor Acceleration.</li><li>Illumination Design for Substations and Industrial Plants.</li><li>Control & Relay Panel Design.</li><li>Control & Instrumentation Design</li></ul>"
+  },
+  "maintenance_page": {
+    "header1": "การบำรุงรักษาระบบและอุปกรณ์ไฟฟ้าแรงดันสูง",
+    "header2": "การบริการและประสบการณ์",
+    "content": "<p class='indent'>การบำรุงรักษาประจำปี และการบำรุงรักษาตามกำหนดการอย่าสม่ำเสมอ มีความสำคัญเป็นอย่างยิ่งเพื่อป้องกันระบบไฟฟ้าล้มเหลวโดยมิได้คาดหมาย อันจะก่อให้เกิดความสูญเสียผลิตภาพ หรืออาจเกิดอุบัติเหตุขึ้นได้ เรายินดีเป็นอย่างยิ่งที่จะนำเสนอโซลูชั่นการตรวจสอบและบำรุงรักษาระบบไฟฟ้าแรงดันสูงอย่างครบวงจร ทั้งโรงงาน สถานีไฟฟ้าเอกชน และสถานีไฟฟ้าของรัฐ</p><p>การบริการของเรา เช่น :</p><ul><li>Thermal scan</li><li>Individual testing</li><li>Relay and Protection testing</li><li>Fire alarm system testing</li><li>lightning protection testing</li><li>Earth Leakage testing</li><li>Reenergized and overall system testing</li><li>Cleaning and reassembly checking</li><li>Repair and Replacement</li><li>Periodical assessment of healthiness for various electrical installations.</li><li>System stability & Reliability checks for electrical installation.</li><li>Retrofitting and refurbishment of switchgears and CRPs</li><li>We provide high quality Service, Overhauling & maintenance of all types of HV / LV Circuit Breakers</li><li>Manpower assistance for short term requirements.</li></ul>"
+  },
+  "previous_work": {
+    "title1": "บริษัทที่เคยร่วมงานด้วย",
+    "title2": "ผลงานที่เคยทำมา",
+    "title3": "ปีพ.ศ."
+  },
+  "contact_us": {
+    "title": "Contact Us",
+    "content": "หากมีคำถามใด ๆ เกี่ยวกับการบริการของเรา หรือวิธีการที่เราสามารถช่วยบริษัทคุณได้ กรุณาโทร หรือกรอกแบบฟอร์มด้านล่าง เพื่อให้แน่ใจว่าจะได้ติดต่อกับบุคคลที่เหมาะสม ท่านสามารถส่ง คำแนะนำ ติชม หรือ สอบถามเกี่ยวกับการบริการ และความรู้เกี่ยวกับระบบไฟฟ้ามายังCECO โดยกรุณากรอกรายละเอียดลงในช่องด้านล่างให้ครบถ้วน เพื่อความสะดวกรวดเร็ว ทางเราจะติดต่อกลับไปหาท่านอย่างเร็วที่สุด",
+    "address": {
+      "title": "ที่อยู่",
+      "content": "105/36 หมู่ 7 คลองหนึ่ง,\nคลองหลวง, ปทุมธานี, ประเทศไทย 12120"
+    },
+    "telephone": {
+      "title": "โทรศัพท์",
+      "content": "+66 (2) 902 9712"
+    },
+    "email": {
+      "title": "อีเมล",
+      "content": "info@ceco.co.th",
+      "content2": "hr@ceco.co.th"
+    },
+    "fax": {
+      "title": "โทรสาร",
+      "content": "+66 (2) 902 9173"
+    }
+  },
+  "footer": {
+    "content": "ผู้เชี่ยวชาญด้านระบบไฟฟ้าแรงดันสูง ด้วยประสบการณ์มากกว่า 28 ปี",
+    "download_title": "หากต้องการทราบข้อมูลเพิ่มเติมของบริษัท\nสามารถดาวน์โหลดได้ที่ด้านล่าง",
+    "download_button": "ดาวน์โหลด"
+  },
+  "copyright": "ลิขสิทธิ์© 2021 สงวนลิขสิทธิ์"
+}

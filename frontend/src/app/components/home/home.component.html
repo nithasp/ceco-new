@@ -1,0 +1,227 @@
+<app-carousel></app-carousel>
+<section id="group-item-section" class="group-item-wrapper services">
+  <div id="services-anchor-point" class="anchor-point"></div>
+  <div class="inner">
+    <a
+      routerLink="/installation"
+      style="
+        background-image: url('assets/ceco-img/FP-Install.webp');
+        object-fit: cover;
+      "
+      class="group-item"
+    >
+      <p class="text">
+        <span>{{ "home_page.group_items.item1" | translate }}</span>
+      </p>
+    </a>
+    <a
+      routerLink="/design"
+      style="
+        background-image: url('assets/ceco-img/FP-Design.webp');
+        object-fit: cover;
+      "
+      class="group-item"
+    >
+      <p class="text">
+        <span>{{ "home_page.group_items.item2" | translate }}</span>
+      </p>
+    </a>
+    <a
+      routerLink="/commissioning"
+      style="
+        background-image: url('assets/ceco-img/FP-Test.webp');
+        object-fit: cover;
+      "
+      class="group-item"
+    >
+      <p class="text">
+        <span>{{ "home_page.group_items.item3" | translate }}</span>
+      </p>
+    </a>
+    <a
+      routerLink="/maintenance"
+      style="
+        background-image: url('assets/ceco-img/FP-Maintenance.webp');
+        object-fit: cover;
+      "
+      class="group-item"
+    >
+      <p class="text">
+        <span>{{ "home_page.group_items.item4" | translate }}</span>
+      </p>
+    </a>
+  </div>
+</section>
+
+<section id="about-us" class="background">
+  <div id="about-us-anchor-point" class="anchor-point"></div>
+  <div class="inner">
+    <div class="row">
+      <div class="col-xs-12 col-lg-6">
+        <img src="assets/ceco-img/About Us.webp" />
+      </div>
+      <div class="title-container col-xs-12 col-lg-6 p-5">
+        <div class="title-wrapper d-flex">
+          <div class="ceco-line">
+            <div class="line line1"></div>
+            <div class="line line2"></div>
+          </div>
+          <div class="title">{{ "home_page.about_us.title" | translate }}</div>
+        </div>
+        <div class="desc add-newline-json">
+          {{ "home_page.about_us.content" | translate }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="our-standard" class="background py-5">
+  <div class="inner">
+    <div class="row p-5 m-auto">
+      <div class="title-container col-xs-12 col-lg-6">
+        <div class="title">
+          {{ "home_page.our_standard.title" | translate }}
+        </div>
+        <div class="desc">
+          <ul>
+            <li>{{ "home_page.our_standard.item1" | translate }}</li>
+            <li>{{ "home_page.our_standard.item2" | translate }}</li>
+            <li>{{ "home_page.our_standard.item3" | translate }}</li>
+            <li>{{ "home_page.our_standard.item4" | translate }}</li>
+            <li>{{ "home_page.our_standard.item5" | translate }}</li>
+            <li>{{ "home_page.our_standard.item6" | translate }}</li>
+            <li>{{ "home_page.our_standard.item7" | translate }}</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-xs-12 col-lg-6 p-0">
+        <img src="assets/about2.png" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="recently-projects" class="mb-5">
+  <div class="inner">
+    <div class="recently-projects-title p-5 d-flex">
+      <div class="ceco-line">
+        <div class="line line1"></div>
+        <div class="line line2"></div>
+      </div>
+      <div class="col-md-8 title-container">
+        <div class="title">
+          {{ "home_page.recently_projects.title" | translate }}
+        </div>
+      </div>
+    </div>
+    <div class="recently-projects-slide">
+      <app-carousel2></app-carousel2>
+    </div>
+  </div>
+</section>
+
+<section id="job" class="mb-3 job-container">
+  <div id="job-anchor-point" class="anchor-point"></div>
+  <div
+    class="container d-flex flex-column align-items-center justify-content-center job-content"
+  >
+    <div class="h1">{{ "home_page.join_us.title" | translate }}</div>
+    <p>
+      {{ "home_page.join_us.content" | translate }}
+    </p>
+    <button type="button" class="btn btn-lg mt-5" routerLink="/job">
+      {{ "home_page.join_us.button" | translate }}
+    </button>
+  </div>
+</section>
+
+<section id="contact-us" class="py-5">
+  <div id="contact-us-anchor-point" class="anchor-point"></div>
+  <div class="inner">
+    <div class="contact-us-title mb-5 d-flex">
+      <div class="ceco-line">
+        <div class="line line1"></div>
+        <div class="line line2"></div>
+      </div>
+      <div class="col-xs-12 col-md-10 title-container">
+        <div class="title">{{ "contact_us.title" | translate }}</div>
+      </div>
+    </div>
+    <div class="contact justify-content-around p-4">
+      <div class="contact-container">
+        <div class="contact-icon">
+          <span class="contact-icon-wrapper">
+            <i-bs name="geo-alt-fill" width="40px" height="40px"></i-bs>
+          </span>
+        </div>
+        <div class="contact-details">
+          <div class="add-newline-json">
+            <span>{{ "contact_us.address.title" | translate }}:</span>
+            <br />
+            <span>{{ "contact_us.address.content" | translate }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-container">
+        <div class="contact-icon">
+          <span class="contact-icon-wrapper">
+            <i-bs name="telephone" width="40px" height="40px"></i-bs>
+          </span>
+        </div>
+        <div class="contact-details">
+          <div>
+            <span>{{ "contact_us.telephone.title" | translate }}:</span>
+            <br />
+            <span>{{ "contact_us.telephone.content" | translate }}</span>
+            <br />
+            <span>{{ "contact_us.fax.content" | translate }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-container">
+        <div class="contact-icon">
+          <span class="contact-icon-wrapper">
+            <i-bs name="envelope" width="40px" height="40px"></i-bs>
+          </span>
+        </div>
+        <div class="contact-details">
+          <div>
+            <span>{{ "contact_us.email.title" | translate }}:</span>
+            <br />
+            <span>{{ "contact_us.email.content" | translate }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="contact-container">
+        <div class="contact-icon facebook">
+          <span class="contact-icon-wrapper">
+            <a href="https://www.facebook.com/ceco1995" target="_blank">
+              <i-bs name="facebook" width="54" height="54"> </i-bs>
+            </a>
+          </span>
+        </div>
+        <div class="contact-details facebook">
+          <div>
+            <a href="https://www.facebook.com/ceco1995" target="_blank"
+              >Facebook Page</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="map" class="mb-5">
+  <div class="inner">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3870.2225907788948!2d100.62923433845641!3d14.064029142168396!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d80102dacbe47%3A0xfdc20d7035a6097d!2z4Lia4Lij4Li04Lip4Lix4LiXIOC4hOC4reC4peC5gOC4peC4hOC4l-C4teC4nyDguYDguK3guYfguJnguIjguLTguYDguJnguLXguKLguKPguLTguYjguIcg4LiI4Liz4LiB4Lix4LiU!5e0!3m2!1sen!2sth!4v1650827905152!5m2!1sen!2sth"
+      style="border: 0"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      style="width: 100%; height: 49vh"
+    ></iframe>
+  </div>
+</section>

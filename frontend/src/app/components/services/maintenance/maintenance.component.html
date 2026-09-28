@@ -1,0 +1,73 @@
+<section id="maintenance" class="service">
+  <div
+    style="
+      background-image: url('assets/ceco-img/FP-Maintenance.webp');
+      height: 50vh;
+      background-size: cover;
+      position: relative;
+    "
+    class="service-bg"
+  >
+    <div class="service-title col-md-11 p-4">
+      <p class="ms-5 fs-1">{{ "maintenance_page.header1" | translate }}</p>
+    </div>
+  </div>
+  <div class="inner row service-content-wrapper">
+    <div class="service-content col-md-8 mt-5">
+      <p class="fs-2" style="color: #fc4852">
+        {{ "maintenance_page.header2" | translate }}
+      </p>
+      <p
+        class="add-newline-json content"
+        [innerHTML]="'maintenance_page.content' | translate"
+      ></p>
+    </div>
+    <div class="col-md-4 mt-5 p-5 services-container">
+      <div class="group-item-wrapper">
+        <p class="fs-2 text-center title pt-4">
+          {{ "service_page.title" | translate }}
+        </p>
+        <a
+          routerLink="/installation"
+          style="
+            background-image: url('assets/ceco-img/FP-Install.webp');
+            object-fit: cover;
+          "
+          class="group-item"
+        >
+          <span class="text">{{
+            "service_page.installation_title" | translate
+          }}</span>
+        </a>
+        <a
+          routerLink="/design"
+          style="
+            background-image: url('assets/ceco-img/FP-Design.webp');
+            object-fit: cover;
+          "
+          class="group-item"
+        >
+          <span class="text">{{
+            "service_page.design_title" | translate
+          }}</span>
+        </a>
+        <a
+          routerLink="/commissioning"
+          style="
+            background-image: url('assets/ceco-img/FP-Test.webp');
+            object-fit: cover;
+          "
+          class="group-item"
+        >
+          <span class="text">{{
+            "service_page.commissioning_title" | translate
+          }}</span>
+        </a>
+      </div>
+    </div>
+    <app-previous-work
+      typeData="maintenance"
+      class="previous-work-wrapper"
+    ></app-previous-work>
+  </div>
+</section>

@@ -1,0 +1,128 @@
+<nav
+  class="navbar fixed-top navbar-expand-lg navbar-light bg-light ceco-nav"
+  [ngClass]="{ active: scrolled }"
+>
+  <div class="inner">
+    <div class="navbar-item1">
+      <div
+        class="flex-grow-1 d-flex align-items-center justify-content-between"
+      >
+        <div class="navbar-item1-1">
+          <a class="navbar-brand" routerLink="/">
+            <img [src]="uploadUrl" alt="" class="ceco-logo" />
+          </a>
+        </div>
+
+        <!-- Step 3: Toggle the value of the property when the toggler button is clicked. -->
+        <div class="navbar-item1-2">
+          <div class="flex-grow-1 languages-icons-mobile">
+            <ul class="navbar-nav flex-grow-1 flex-row justify-content-center">
+              <li class="nav-item">
+                <a
+                  class="navbar-brand flex-grow-1"
+                  href="javascript:void(0)"
+                  (click)="selectLanguage('en')"
+                >
+                  EN
+                </a>
+              </li>
+              <li class="nav-item line-wrapper">
+                <div class="line"></div>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="navbar-brand flex-grow-1"
+                  href="javascript:void(0)"
+                  (click)="selectLanguage('th')"
+                >
+                  TH
+                </a>
+              </li>
+            </ul>
+          </div>
+          <button
+            class="navbar-toggler"
+            type="button"
+            #navbarMenuRef
+            (click)="navbarActive(navbarMenuRef)"
+          >
+            &#9776;
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Step 2: Add the ngbCollapse directive to the element below. -->
+
+    <div class="navbar-item2 d-flex">
+      <div
+        [ngbCollapse]="isMenuCollapsed"
+        class="collapse navbar-collapse flex-grow-1"
+      >
+        <ul class="navbar-nav menu">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/" (click)="toTopPage()">{{
+              "navbar.item1" | translate
+            }}</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/"
+              (click)="toElem('services-anchor-point')"
+              >{{ "navbar.item2" | translate }}</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/"
+              (click)="toElem('about-us-anchor-point')"
+              >{{ "navbar.item3" | translate }}</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/"
+              (click)="toElem('job-anchor-point')"
+              >{{ "navbar.item4" | translate }}</a
+            >
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              routerLink="/"
+              (click)="toElem('contact-us-anchor-point')"
+              >{{ "navbar.item5" | translate }}</a
+            >
+          </li>
+        </ul>
+      </div>
+      <div class="flex-grow-1 languages-icons flex-center">
+        <ul class="navbar-nav flex-grow-1 flex-row justify-content-center">
+          <li class="nav-item">
+            <a
+              class="navbar-brand flex-grow-1"
+              href="javascript:void(0)"
+              (click)="selectLanguage('en')"
+            >
+              EN
+            </a>
+          </li>
+          <li class="nav-item line-wrapper">
+            <div class="line"></div>
+          </li>
+          <li class="nav-item">
+            <a
+              class="navbar-brand flex-grow-1"
+              href="javascript:void(0)"
+              (click)="selectLanguage('th')"
+            >
+              TH
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

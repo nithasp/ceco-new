@@ -1,0 +1,188 @@
+.carousel-container {
+  display: block;
+  width: 100%;
+  height: 100vh;
+}
+
+.carousel {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+.content-wrapper {
+  width: 100%;
+}
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+}
+
+.control-container {
+  position: absolute;
+  bottom: -100px;
+  border: none;
+  background-color: transparent;
+  outline: 0; // remove blue outline border, but make sure they are still focussable for accessibility
+  cursor: pointer;
+  user-select: none;
+  font-size: 32px;
+}
+
+// =========================
+// Next and Prev buttons
+// =========================
+.control {
+  border: none;
+  background-color: transparent;
+  outline: 0; // remove blue outline border, but make sure they are still focussable for accessibility
+  cursor: pointer;
+  user-select: none;
+
+  opacity: 80%;
+  // opacity effect on hover
+  transition: opacity 150ms cubic-bezier(0.25, 0.46, 0.45, 0.84);
+  z-index: 3;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+  }
+}
+
+/* style the arrows */
+.arrow {
+  display: block;
+  border-left: 0.1em solid #fc4852;
+  border-bottom: 0.1em solid #fc4852;
+  width: 0.5em;
+  height: 0.5em;
+  font-size: 2em;
+  margin-top: 10px;
+
+  &.left {
+    transform: rotate(45deg);
+  }
+
+  &.right {
+    transform: rotate(225deg);
+  }
+}
+
+.slick-dots {
+  padding-left: 0;
+  margin-bottom: 0.5em;
+}
+
+.slick {
+  border-bottom: 1px solid #fc4852;
+  width: 100%;
+  list-style: none;
+  height: 2px;
+
+  button {
+    opacity: 0;
+  }
+}
+
+.slick-active {
+  border-bottom: 3px solid #fff;
+  width: 100%;
+  list-style: none;
+}
+
+.title-container {
+  width: 70%;
+  max-height: fit-content;
+  position: relative;
+
+  .title {
+    color: #fc4852;
+    margin-bottom: 0;
+  }
+
+  .desc {
+    color: #fff;
+  }
+}
+
+.slide-numbers-wrapper {
+  width: 100px;
+  text-align: center;
+  color: #fc4852;
+  .slide-numbers {
+    position: relative;
+    top: -12px;
+  }
+}
+
+#mainDiv {
+  margin-right: 2em;
+  width: 30px;
+  position: relative;
+  border-right: 6px solid #fc4852;
+  margin-top: 1em;
+}
+
+#secondDiv {
+  border-left: 6px solid #fc4852;
+  position: absolute;
+  top: 0;
+  bottom: 50%;
+}
+
+// Large Resolution
+@media (min-width: 1921px) {
+  .title {
+    font-size: 6vh !important;
+  }
+  .desc {
+    font-size: 2.7vh !important;
+  }
+  .control-container {
+    font-size: 3.7vh !important;
+    bottom: -11vh !important;
+    .slide-numbers-wrapper {
+      width: 10vh !important;
+    }
+  }
+  .ceco-line .line {
+    border-right: 0.7vh solid #fc4852;
+    margin: 1vh 1.5vh 0 0.1vh;
+  }
+}
+
+@media screen and (min-width: 991px) {
+  .title {
+    font-size: 3.5em;
+  }
+
+  .desc {
+    font-size: 1.5em;
+  }
+}
+
+@media screen and (max-width: 990px) {
+  .title {
+    font-size: 2.5em;
+  }
+
+  .desc {
+    font-size: 1.25em;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .title {
+    line-height: 50px;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .title {
+    font-size: 2em;
+  }
+}

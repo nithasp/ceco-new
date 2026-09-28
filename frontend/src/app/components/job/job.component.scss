@@ -1,0 +1,149 @@
+.job-header {
+  margin: 0;
+}
+.job-contact-container {
+  background-color: #fff;
+  box-shadow: 4px 4px 4px #c4c4c4;
+  border-radius: 24px;
+
+  .detail {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    p {
+      margin: 0 0 0 28px;
+    }
+  }
+
+  .job-title {
+    margin-left: 58px;
+  }
+  .title1 {
+    color: #ea5959;
+  }
+
+  .address,
+  .email {
+    line-height: 2em;
+  }
+
+  .icon {
+    color: #fc4852;
+  }
+}
+
+.job-content {
+  .inner {
+    width: 91%;
+  }
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #fc4852 !important;
+}
+
+// Responsive width
+@media (max-width: 992px) {
+  .title1 {
+    font-size: 4vw !important;
+  }
+  .title2 {
+    font-size: 2.5vw !important;
+  }
+
+  .detail {
+    p {
+      font-size: 2vw !important;
+    }
+    .icon {
+      width: 30px;
+      height: 30px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .job-header {
+    padding: 6vw;
+    width: auto;
+  }
+
+  .detail {
+    p {
+      font-size: 2.5vw !important;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .job-title {
+    margin-left: 13vw !important;
+  }
+
+  .title1 {
+    font-size: 5vw !important;
+  }
+  .title2 {
+    font-size: 3.5vw !important;
+  }
+
+  .detail {
+    p {
+      font-size: 4vw !important;
+      margin: 0 0 0 8vw !important;
+    }
+    .icon {
+      width: 5vw;
+      height: 5vw;
+    }
+  }
+}
+
+@media (max-width: 400px) {
+  .icon {
+    margin-top: -3vw !important;
+  }
+}
+
+// Responsive height
+@media (max-height: 850px) {
+  .job-header {
+    height: 100vh !important;
+  }
+}
+
+// Large Resolution
+@media (min-width: 1921px) {
+  #job {
+    .job-title {
+      margin: 0 0 2vh 6vh;
+      .title1 {
+        font-size: 5.2vh !important;
+      }
+      .title2 {
+        font-size: 2.2vh !important;
+        margin-top: 2vh;
+      }
+    }
+
+    .job-content {
+      margin: 6vh 0 !important;
+    }
+    .job-content-title {
+      font-size: 4.2vh;
+    }
+    .job-contact-container {
+      padding: 5vh !important;
+      border-radius: 2vh;
+      box-shadow: 0.3vh 0.4vh 0.6vh #c4c4c4;
+      max-width: 100% !important;
+      .detail {
+        margin-bottom: 3vh;
+        p {
+          font-size: 1.7vh;
+          margin: 0 0 0 3vh;
+        }
+      }
+    }
+  }
+}

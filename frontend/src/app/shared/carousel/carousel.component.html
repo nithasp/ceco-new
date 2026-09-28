@@ -1,0 +1,62 @@
+<div class="carousel-container">
+  <div class="carousel">
+    <ng-container *ngFor="let slide of slides; let i = index">
+      <div
+        style="padding-left: 11%"
+        *ngIf="i === currentSlide"
+        [ngStyle]="{
+          'background-image':
+            'linear-gradient(123.97deg, rgba(147, 45, 45, 0.6) 21.74%, rgba(0, 0, 0, 0) 100%),url(' +
+            url +
+            slide.Image.data[0].attributes.url +
+            ')'
+        }"
+        class="slide d-flex align-items-center"
+        @carouselAnimation
+      >
+        <div class="content-wrapper flex-column">
+          <div class="d-flex flex-row">
+            <div class="ceco-line">
+              <div class="line line1"></div>
+              <div class="line line2"></div>
+            </div>
+            <div class="title-container">
+              <p class="title">
+                {{ slide.Title }}
+              </p>
+              <p class="desc">
+                {{ slide.Description }}
+              </p>
+              <div class="control-container">
+                <div class="d-flex">
+                  <button class="control prev" (click)="onPreviousClick()">
+                    <span class="arrow left"></span>
+                  </button>
+                  <div class="slide-numbers-wrapper">
+                    <ul class="d-flex slick-dots">
+                      <li
+                        class="slick"
+                        *ngFor="let slide of slides; index as i"
+                        [ngClass]="{ 'slick-active': i === currentSlide }"
+                      >
+                        <button></button>
+                      </li>
+                    </ul>
+                    <div class="slide-numbers">
+                      <span style="color: #fff">{{ currentSlide + 1 }}</span> /
+                      {{ slides.length }}
+                    </div>
+                  </div>
+                  <button class="control next" (click)="onNextClick()">
+                    <span class="arrow right"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+

@@ -1,0 +1,18 @@
+<swiper
+  [config]="swiperConfig"
+  [effect]="'fade'"
+  style="
+    --swiper-navigation-color: #fff;
+    --swiper-pagination-color: #ea5959;
+    --swiper-pagination-bullet-size: 16px;
+  "
+  class="mySwiper"
+>
+  <ng-template swiperSlide *ngFor="let slide of recentProjectSlides">
+    <img src="{{ url + slide.attributes.Image.data.attributes.url }}" />
+    <div class="content">
+      <h1>{{ slide.attributes.Name }}</h1>
+      <p>{{ slide.attributes.Description }}</p>
+    </div>
+  </ng-template>
+</swiper>

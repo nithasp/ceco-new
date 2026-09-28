@@ -1,0 +1,67 @@
+<section id="job">
+  <div
+    class="job-header row align-items-center"
+    style="
+      background-image: url('assets/ceco-img/Career Cover.webp');
+      height: 60vh;
+      background-size: cover;
+      width: 100%;
+    "
+  >
+    <div
+      class="job-contact-container container col-xs-9 col-md-8 col-xxl-4 offset-xxl-7 p-5"
+    >
+      <div class="job-title">
+        <p class="display-5 fw-normal title1">
+          {{ "job_page.header1" | translate }}
+        </p>
+        <p class="fs-5 title2">
+          {{ "job_page.header2" | translate }}
+        </p>
+      </div>
+      <div class="detail">
+        <i-bs
+          class="icon"
+          name="geo-alt-fill"
+          width="30px"
+          height="30px"
+        ></i-bs>
+        <p class="address">
+          {{ "contact_us.address.content" | translate }}
+        </p>
+      </div>
+      <div class="detail">
+        <i-bs class="icon" name="envelope" width="30px" height="30px"></i-bs>
+        <p class="email">{{ "contact_us.email.content2" | translate }}</p>
+      </div>
+      <div class="detail">
+        <i-bs class="icon" name="person-fill" width="30px" height="30px"></i-bs>
+        <p class="department">{{ "job_page.section" | translate }}</p>
+      </div>
+      <div class="detail">
+        <i-bs class="icon" name="telephone" width="30px" height="30px"></i-bs>
+        <p class="department">
+          {{ "job_page.telephone" | translate }} 02-9029713 Ext.2
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="job-content my-5">
+    <div class="inner">
+      <h1 class="job-content-title text-center mb-5">
+        {{ "job_page.job_content.title" | translate }}
+      </h1>
+      <h1 *ngIf="isLoading" class="text-center">Loading...</h1>
+      <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" *ngIf="!isLoading">
+        <ngb-panel *ngFor="let recruitment of recruitments">
+          <ng-template ngbPanelTitle>
+            <span>{{ recruitment.attributes.position }}</span>
+          </ng-template>
+          <ng-template ngbPanelContent>
+            <div [innerHTML]="recruitment.attributes.description"></div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </div>
+  </div>
+</section>
