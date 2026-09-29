@@ -1,70 +1,81 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import {
   ApiResponse,
-  HeaderHomePage,
-  HeaderHomePageSlide,
+  Experience,
+  ExperienceType,
+  HeaderSlide,
+  Locale,
   RecentProject,
-  Experiences,
-  Recruitments,
-  Pdfs,
+  Recruitment,
+  SiteDocument,
+  SiteHeader,
 } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CmsService {
-  url: string = 'https://api.beonit.xyz/strapi';
-  currentLanguage = new BehaviorSubject<string>('th');
+  private readonly base = `${environment.apiUrl}${environment.apiPrefix}/content`;
+
+  currentLanguage = new BehaviorSubject<Locale>('th');
   isLoading = new BehaviorSubject<boolean>(true);
 
-  homeSlide1 = new BehaviorSubject<HeaderHomePageSlide[]>([]);
+  homeSlide1 = new BehaviorSubject<HeaderSlide[]>([]);
   currentHomeSlide1 = new BehaviorSubject<number>(0);
 
   recentProjectGlobalSlide = new BehaviorSubject<RecentProject[]>([]);
 
-  experienceItems = new BehaviorSubject<Experiences | undefined>(undefined);
-  experienceType = new BehaviorSubject<string>('installation');
+  experienceItems = new BehaviorSubject<Experience | undefined>(undefined);
+  experienceType = new BehaviorSubject<ExperienceType>('installation');
 
-  recruitmentsItemsGlobal = new BehaviorSubject<Recruitments[]>([]);
+  recruitmentsItemsGlobal = new BehaviorSubject<Recruitment[]>([]);
+
+  companyLogoUrl = new BehaviorSubject<string>('');
+  companyProfileUrl = new BehaviorSubject<string>('');
 
   constructor(private httpClient: HttpClient) {}
 
-  getHeaderSlide(lang: string = this.currentLanguage.value) {
-    return this.httpClient.get<ApiResponse<HeaderHomePage>>(
-      `${this.url}/api/headers?locale=${lang}&populate%5B%5D=*&populate%5B%5D=Slides.Image`
-    );
+  // Each call unwraps the envelope, so a component works with the content itself. Image and file
+  // URLs arrive absolute, so nothing has to be prefixed here.
+
+  getHeaderSlide(lang: Locale = this.currentLanguage.value): Observable<SiteHeader | null> {
+    return this.httpClient
+      .get<ApiResponse<SiteHeader | null>>(`${this.base}/header`, { params: { locale: lang } })
+      .pipe(map((res) => res.data));
   }
 
-  getRecentProject(lang: string = this.currentLanguage.value) {
-    return this.httpClient.get<ApiResponse<RecentProject>>(
-      `${this.url}/api/recents?locale=${lang}&populate=*`
-    );
+  getRecentProject(lang: Locale = this.currentLanguage.value): Observable<RecentProject[]> {
+    return this.httpClient
+      .get<ApiResponse<RecentProject[]>>(`${this.base}/recent-projects`, { params: { locale: lang } })
+      .pipe(map((res) => res.data ?? []));
   }
 
-  getExperiences(lang: string = this.currentLanguage.value) {
-    return this.httpClient.get<ApiResponse<Experiences>>(
-      `${this.url}/api/experiences?locale=${lang}&populate[]=company.work`
-    );
+  getExperiences(lang: Locale = this.currentLanguage.value): Observable<Experience[]> {
+    return this.httpClient
+      .get<ApiResponse<Experience[]>>(`${this.base}/experiences`, { params: { locale: lang } })
+      .pipe(map((res) => res.data ?? []));
   }
 
-  getRecruitments(lang: string = this.currentLanguage.value) {
-    return this.httpClient.get<ApiResponse<Recruitments>>(
-      `${this.url}/api/recruitments/?locale=${lang}`
-    );
+  getRecruitments(lang: Locale = this.currentLanguage.value): Observable<Recruitment[]> {
+    return this.httpClient
+      .get<ApiResponse<Recruitment[]>>(`${this.base}/recruitments`, { params: { locale: lang } })
+      .pipe(map((res) => res.data ?? []));
   }
 
-  getCompanyProfile() {
-    return this.httpClient.get<ApiResponse<Pdfs>>(
-      `${this.url}/api/pdfs?populate=*`
-    );
+  getCompanyProfile(): Observable<SiteDocument | null> {
+    return this.httpClient
+      .get<ApiResponse<SiteDocument | null>>(`${this.base}/company-profile`)
+      .pipe(map((res) => res.data));
   }
 
-  getCompanyLogo() {
-    return this.httpClient.get<any>(
-      `${this.url}/api/logos/?lang=all&populate[]=image`
-    );
+  getCompanyLogo(lang: Locale = this.currentLanguage.value): Observable<SiteDocument | null> {
+    return this.httpClient
+      .get<ApiResponse<SiteDocument | null>>(`${this.base}/logo`, { params: { locale: lang } })
+      .pipe(map((res) => res.data));
   }
 
   getIsLoading() {

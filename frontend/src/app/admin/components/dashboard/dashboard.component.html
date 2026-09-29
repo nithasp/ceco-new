@@ -1,0 +1,82 @@
+<div class="cms-topbar">
+  <div>
+    <h1>Overview</h1>
+    <p>What the website is serving right now.</p>
+  </div>
+</div>
+
+<div class="cms-content">
+  <div class="cms-loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="!loading && tally">
+    <div class="cms-note" *ngIf="!tally.hasProfilePdf">
+      The company profile PDF has not been uploaded yet, so the footer download button stays hidden.
+      Add it under <strong>Logo &amp; profile PDF</strong>.
+    </div>
+
+    <div class="cms-grid">
+      <div class="cms-card" style="margin: 0">
+        <div class="cms-card-head"><h2>Home carousel</h2></div>
+        <div class="cms-card-body">
+          <div>Thai: <strong>{{ tally.slidesTh }}</strong> slide(s)</div>
+          <div>English: <strong>{{ tally.slidesEn }}</strong> slide(s)</div>
+          <hr class="cms-divider" />
+          <a class="cms-btn cms-btn-secondary cms-btn-sm" routerLink="/admin/home">Edit home page</a>
+        </div>
+      </div>
+
+      <div class="cms-card" style="margin: 0">
+        <div class="cms-card-head"><h2>Recent projects</h2></div>
+        <div class="cms-card-body">
+          <div>Thai: <strong>{{ tally.projectsTh }}</strong></div>
+          <div>English: <strong>{{ tally.projectsEn }}</strong></div>
+          <hr class="cms-divider" />
+          <a class="cms-btn cms-btn-secondary cms-btn-sm" routerLink="/admin/home">Edit projects</a>
+        </div>
+      </div>
+
+      <div class="cms-card" style="margin: 0">
+        <div class="cms-card-head"><h2>Job openings</h2></div>
+        <div class="cms-card-body">
+          <div>Thai: <strong>{{ tally.jobsTh }}</strong></div>
+          <div>English: <strong>{{ tally.jobsEn }}</strong></div>
+          <hr class="cms-divider" />
+          <a class="cms-btn cms-btn-secondary cms-btn-sm" routerLink="/admin/job">Edit jobs</a>
+        </div>
+      </div>
+
+      <div class="cms-card" style="margin: 0">
+        <div class="cms-card-head"><h2>Previous work</h2></div>
+        <div class="cms-card-body">
+          <div><strong>{{ tally.workTables }}</strong> table(s) across both languages</div>
+          <div class="cms-muted" style="font-size: 12.5px">
+            4 service pages &times; 2 languages = 8 when complete
+          </div>
+          <hr class="cms-divider" />
+          <a class="cms-btn cms-btn-secondary cms-btn-sm" routerLink="/admin/previous-work">Edit tables</a>
+        </div>
+      </div>
+
+      <div class="cms-card" style="margin: 0">
+        <div class="cms-card-head"><h2>Site files</h2></div>
+        <div class="cms-card-body">
+          <div><strong>{{ tally.files }}</strong> file(s) in the library</div>
+          <div style="margin-top: 4px">
+            Logo:
+            <span class="cms-badge" [ngClass]="tally.hasLogo ? 'is-live' : 'is-draft'">
+              {{ tally.hasLogo ? "set" : "missing" }}
+            </span>
+          </div>
+          <div style="margin-top: 4px">
+            Profile PDF:
+            <span class="cms-badge" [ngClass]="tally.hasProfilePdf ? 'is-live' : 'is-draft'">
+              {{ tally.hasProfilePdf ? "set" : "missing" }}
+            </span>
+          </div>
+          <hr class="cms-divider" />
+          <a class="cms-btn cms-btn-secondary cms-btn-sm" routerLink="/admin/media">Media library</a>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

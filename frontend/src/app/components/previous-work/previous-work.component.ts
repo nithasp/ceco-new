@@ -1,38 +1,42 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Input } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CmsService } from 'src/app/services/cms.service';
-import { ApiResponse, Experiences } from 'src/app/interfaces';
+import { Experience, ExperienceType } from 'src/app/interfaces';
 
 @Component({
   selector: 'app-previous-work',
   templateUrl: './previous-work.component.html',
   styleUrls: ['./previous-work.component.scss'],
 })
-export class PreviousWorkComponent implements OnInit {
-  @Input() typeData!: string;
+export class PreviousWorkComponent implements OnInit, OnDestroy {
+  @Input() typeData!: ExperienceType;
 
-  companies: Experiences | undefined = undefined;
+  experience: Experience | undefined = undefined;
+
+  private readonly subscriptions = new Subscription();
 
   constructor(private cmsService: CmsService) {}
 
   ngOnInit(): void {
     this.cmsService.experienceType.next(this.typeData);
 
-    this.cmsService
-      .getExperiences(this.cmsService.currentLanguage.value)
-      .subscribe((res: ApiResponse<Experiences>) => {
-        this.cmsService
-          .getExperienceItems()
-          .subscribe((value: Experiences | undefined) => {
-            this.companies = value;
-          });
+    this.subscriptions.add(
+      this.cmsService.getExperienceItems().subscribe((value: Experience | undefined) => {
+        this.experience = value;
+      }),
+    );
 
-        const matchDataType = res.data.find(
-          (x: Experiences) => x.attributes.type === this.typeData
-        );
+    this.subscriptions.add(
+      this.cmsService
+        .getExperiences(this.cmsService.currentLanguage.value)
+        .subscribe((experiences: Experience[]) => {
+          const match = experiences.find((item) => item.type === this.typeData);
+          this.cmsService.experienceItems.next(match);
+        }),
+    );
+  }
 
-        if (matchDataType) {
-          this.cmsService.experienceItems.next(matchDataType);
-        }
-      });
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

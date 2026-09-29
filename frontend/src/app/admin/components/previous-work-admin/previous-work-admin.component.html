@@ -1,0 +1,260 @@
+<div class="cms-topbar">
+  <div>
+    <h1>Previous work</h1>
+    <p>The company / work / year table shown on each service page.</p>
+  </div>
+
+  <div class="cms-tabs">
+    <button type="button" [ngClass]="{ active: locale === 'th' }" (click)="switchLocale('th')">ไทย</button>
+    <button type="button" [ngClass]="{ active: locale === 'en' }" (click)="switchLocale('en')">English</button>
+  </div>
+</div>
+
+<div class="cms-content">
+  <div class="cms-tabs" style="margin-bottom: 18px; flex-wrap: wrap">
+    <button
+      type="button"
+      *ngFor="let item of types"
+      [ngClass]="{ active: type === item }"
+      (click)="switchType(item)"
+    >
+      {{ typeLabels[item] }}
+    </button>
+  </div>
+
+  <div class="cms-loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="!loading">
+    <div class="cms-card" *ngIf="!experience">
+      <div class="cms-card-body">
+        <div class="cms-empty">
+          There is no “{{ typeLabels[type] }}” table for this language yet.
+          <div style="margin-top: 12px">
+            <button class="cms-btn cms-btn-sm" type="button" (click)="createTable()" [disabled]="busy">
+              Create table
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="experience">
+      <div class="cms-card">
+        <div class="cms-card-head">
+          <div>
+            <h2>{{ typeLabels[type] }} — companies</h2>
+            <small>Each company becomes one row on the service page.</small>
+          </div>
+        </div>
+
+        <div class="cms-card-body">
+          <div class="cms-row" style="align-items: flex-end; margin-bottom: 4px">
+            <div class="cms-field" style="flex: 3 1 280px">
+              <label for="new-company">Add a company</label>
+              <input
+                id="new-company"
+                type="text"
+                placeholder="Company name"
+                [(ngModel)]="newCompanyName"
+                (keyup.enter)="addCompany()"
+              />
+            </div>
+            <div class="cms-field" style="flex: 0 0 auto">
+              <button
+                class="cms-btn cms-btn-sm"
+                type="button"
+                (click)="addCompany()"
+                [disabled]="busy || !newCompanyName.trim()"
+              >
+                Add company
+              </button>
+            </div>
+          </div>
+
+          <div class="cms-empty" *ngIf="!experience.companies.length">
+            No companies yet. Add the first one above.
+          </div>
+
+          <div class="cms-item" *ngFor="let company of experience.companies; let ci = index">
+            <div class="cms-item-head" style="margin-bottom: 10px">
+              <div class="cms-btn-row" style="flex: 1 1 320px">
+                <span class="cms-badge">#{{ ci + 1 }}</span>
+                <input
+                  type="text"
+                  [(ngModel)]="company.name"
+                  style="flex: 1 1 200px"
+                  aria-label="Company name"
+                />
+                <button
+                  class="cms-btn cms-btn-sm"
+                  type="button"
+                  (click)="saveCompany(company)"
+                  [disabled]="busy"
+                >
+                  Save
+                </button>
+              </div>
+
+              <div class="cms-btn-row">
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-icon"
+                  type="button"
+                  (click)="moveCompany(ci, -1)"
+                  [disabled]="busy || ci === 0"
+                  title="Move up"
+                >
+                  ↑
+                </button>
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-icon"
+                  type="button"
+                  (click)="moveCompany(ci, 1)"
+                  [disabled]="busy || ci === experience.companies.length - 1"
+                  title="Move down"
+                >
+                  ↓
+                </button>
+
+                <ng-container *ngIf="confirmCompanyId !== company.id">
+                  <button
+                    class="cms-btn cms-btn-danger cms-btn-sm"
+                    type="button"
+                    (click)="confirmCompanyId = company.id"
+                    [disabled]="busy"
+                  >
+                    Delete
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="confirmCompanyId === company.id">
+                  <span class="cms-inline-confirm">
+                    Delete the company and its {{ company.works.length }} work row(s)?
+                  </span>
+                  <button
+                    class="cms-btn cms-btn-danger cms-btn-sm"
+                    type="button"
+                    (click)="deleteCompany(company)"
+                    [disabled]="busy"
+                  >
+                    Yes, delete
+                  </button>
+                  <button
+                    class="cms-btn cms-btn-secondary cms-btn-sm"
+                    type="button"
+                    (click)="confirmCompanyId = null"
+                  >
+                    Keep
+                  </button>
+                </ng-container>
+              </div>
+            </div>
+
+            <!-- work rows -->
+            <div style="padding-left: 10px; border-left: 3px solid var(--cms-border)">
+              <div
+                class="cms-row"
+                style="align-items: center; gap: 8px; margin-bottom: 8px"
+                *ngFor="let work of company.works; let wi = index"
+              >
+                <input
+                  type="text"
+                  [(ngModel)]="work.description"
+                  style="flex: 4 1 260px"
+                  aria-label="Work description"
+                />
+                <input
+                  type="number"
+                  min="1900"
+                  max="2200"
+                  [(ngModel)]="work.year"
+                  style="flex: 0 0 96px"
+                  aria-label="Year"
+                />
+                <button class="cms-btn cms-btn-sm" type="button" (click)="saveWork(work)" [disabled]="busy">
+                  Save
+                </button>
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-icon"
+                  type="button"
+                  (click)="moveWork(company, wi, -1)"
+                  [disabled]="busy || wi === 0"
+                  title="Move up"
+                >
+                  ↑
+                </button>
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-icon"
+                  type="button"
+                  (click)="moveWork(company, wi, 1)"
+                  [disabled]="busy || wi === company.works.length - 1"
+                  title="Move down"
+                >
+                  ↓
+                </button>
+
+                <ng-container *ngIf="confirmWorkId !== work.id">
+                  <button
+                    class="cms-btn cms-btn-danger cms-btn-sm"
+                    type="button"
+                    (click)="confirmWorkId = work.id"
+                    [disabled]="busy"
+                  >
+                    Delete
+                  </button>
+                </ng-container>
+                <ng-container *ngIf="confirmWorkId === work.id">
+                  <button
+                    class="cms-btn cms-btn-danger cms-btn-sm"
+                    type="button"
+                    (click)="deleteWork(company, work)"
+                    [disabled]="busy"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    class="cms-btn cms-btn-secondary cms-btn-sm"
+                    type="button"
+                    (click)="confirmWorkId = null"
+                  >
+                    Keep
+                  </button>
+                </ng-container>
+              </div>
+
+              <div class="cms-muted" style="font-size: 12.5px" *ngIf="!company.works.length">
+                No work rows for this company yet.
+              </div>
+
+              <div class="cms-row" style="align-items: center; gap: 8px; margin-top: 10px">
+                <input
+                  type="text"
+                  placeholder="New work description"
+                  [(ngModel)]="draftFor(company.id).description"
+                  (keyup.enter)="addWork(company)"
+                  style="flex: 4 1 260px"
+                  aria-label="New work description"
+                />
+                <input
+                  type="number"
+                  min="1900"
+                  max="2200"
+                  placeholder="Year"
+                  [(ngModel)]="draftFor(company.id).year"
+                  style="flex: 0 0 96px"
+                  aria-label="New work year"
+                />
+                <button
+                  class="cms-btn cms-btn-sm"
+                  type="button"
+                  (click)="addWork(company)"
+                  [disabled]="busy || !draftFor(company.id).description.trim()"
+                >
+                  Add row
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>

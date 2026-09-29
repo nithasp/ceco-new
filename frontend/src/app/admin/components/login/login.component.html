@@ -1,0 +1,38 @@
+<div class="cms cms-login-page">
+  <form class="cms-login-card" (ngSubmit)="submit()">
+    <h1>CECO CMS</h1>
+    <p class="cms-login-sub">Sign in to edit the website content.</p>
+
+    <div class="cms-alert" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <div class="cms-field">
+      <label for="username">Username</label>
+      <input
+        id="username"
+        name="username"
+        type="text"
+        autocomplete="username"
+        [(ngModel)]="username"
+        [disabled]="submitting"
+        required
+      />
+    </div>
+
+    <div class="cms-field">
+      <label for="password">Password</label>
+      <input
+        id="password"
+        name="password"
+        type="password"
+        autocomplete="current-password"
+        [(ngModel)]="password"
+        [disabled]="submitting"
+        required
+      />
+    </div>
+
+    <button class="cms-btn" type="submit" [disabled]="submitting || !username.trim() || !password">
+      {{ submitting ? "Signing in…" : "Sign in" }}
+    </button>
+  </form>
+</div>

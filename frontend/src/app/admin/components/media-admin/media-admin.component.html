@@ -1,0 +1,154 @@
+<div class="cms-topbar">
+  <div>
+    <h1>Media library</h1>
+    <p>{{ total }} file(s). Images and the company profile PDF.</p>
+  </div>
+
+  <div class="cms-btn-row">
+    <input
+      type="search"
+      placeholder="Search by name or alt text…"
+      [(ngModel)]="search"
+      (keyup.enter)="load()"
+      style="width: 220px"
+    />
+    <button class="cms-btn cms-btn-secondary cms-btn-sm" type="button" (click)="load()">Search</button>
+    <label class="cms-btn cms-btn-sm" style="margin: 0">
+      {{ uploading ? "Uploading…" : "Upload files" }}
+      <input
+        type="file"
+        multiple
+        accept="image/*,application/pdf"
+        (change)="onFileSelected($event)"
+        [disabled]="uploading"
+        hidden
+      />
+    </label>
+  </div>
+</div>
+
+<div class="cms-content">
+  <div class="cms-loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="!loading">
+    <!-- details panel for the selected file -->
+    <div class="cms-card" *ngIf="selected">
+      <div class="cms-card-head">
+        <div>
+          <h2>File details</h2>
+          <small class="cms-mono">{{ selected.key }}</small>
+        </div>
+        <button class="cms-btn cms-btn-secondary cms-btn-sm" type="button" (click)="selected = null">
+          Close
+        </button>
+      </div>
+      <div class="cms-card-body">
+        <div class="cms-row">
+          <div class="cms-thumb" style="width: 190px; height: 128px">
+            <img *ngIf="isImage(selected)" [src]="selected.url" [alt]="selected.name" />
+            <span class="cms-file-ext" *ngIf="!isImage(selected)">{{ extLabel(selected) }}</span>
+          </div>
+
+          <div style="flex: 1 1 260px">
+            <div class="cms-field">
+              <label for="file-name">Name</label>
+              <input id="file-name" type="text" [(ngModel)]="selected.name" />
+            </div>
+            <div class="cms-field">
+              <label for="file-alt">Alt text</label>
+              <input id="file-alt" type="text" [(ngModel)]="selected.alternativeText" />
+              <div class="cms-hint">
+                Read out by screen readers and shown if the image cannot load.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cms-row cms-muted" style="font-size: 12.5px; gap: 18px; margin-bottom: 14px">
+          <span>{{ selected.mime }}</span>
+          <span>{{ sizeLabel(selected.size) }}</span>
+          <span *ngIf="selected.width">{{ selected.width }}&times;{{ selected.height }} px</span>
+          <span>stored in: {{ selected.provider === "r2" ? "Cloudflare R2" : "local disk" }}</span>
+        </div>
+
+        <div class="cms-btn-row">
+          <button class="cms-btn cms-btn-sm" type="button" (click)="save()" [disabled]="busy">
+            Save details
+          </button>
+          <a class="cms-btn cms-btn-secondary cms-btn-sm" [href]="selected.url" target="_blank">
+            Open original ↗
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cms-card">
+      <div class="cms-card-head">
+        <h2>All files</h2>
+      </div>
+      <div class="cms-card-body">
+        <div class="cms-empty" *ngIf="!files.length">
+          No files yet. Use “Upload files” to add the first one.
+        </div>
+
+        <div class="cms-media-grid" *ngIf="files.length">
+          <div *ngFor="let file of files">
+            <button
+              class="cms-media-tile"
+              type="button"
+              style="width: 100%"
+              [ngClass]="{ selected: selected?.id === file.id }"
+              (click)="select(file)"
+            >
+              <div class="cms-media-preview">
+                <img *ngIf="isImage(file)" [src]="file.url" [alt]="file.alternativeText || file.name" />
+                <span class="cms-file-ext" *ngIf="!isImage(file)">{{ extLabel(file) }}</span>
+              </div>
+              <div class="cms-media-meta">
+                <strong [title]="file.name">{{ file.name }}</strong>
+                <span>{{ sizeLabel(file.size) }}</span>
+              </div>
+            </button>
+
+            <div style="margin-top: 6px">
+              <ng-container *ngIf="confirmDeleteId !== file.id">
+                <button
+                  class="cms-btn cms-btn-danger cms-btn-sm"
+                  type="button"
+                  style="width: 100%"
+                  (click)="requestDelete(file)"
+                  [disabled]="busy"
+                >
+                  Delete
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="confirmDeleteId === file.id">
+                <div class="cms-btn-row" style="gap: 6px">
+                  <button
+                    class="cms-btn cms-btn-danger cms-btn-sm"
+                    type="button"
+                    (click)="delete(file, forceNeeded)"
+                    [disabled]="busy"
+                  >
+                    {{ forceNeeded ? "Delete anyway" : "Confirm" }}
+                  </button>
+                  <button
+                    class="cms-btn cms-btn-secondary cms-btn-sm"
+                    type="button"
+                    (click)="confirmDeleteId = null; forceNeeded = false"
+                  >
+                    Keep
+                  </button>
+                </div>
+                <div class="cms-hint" *ngIf="forceNeeded" style="color: #c0392b">
+                  Still used on the site. Deleting removes the picture from whatever shows it.
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

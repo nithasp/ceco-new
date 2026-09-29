@@ -1,0 +1,186 @@
+<div class="cms-topbar">
+  <div>
+    <h1>Logo &amp; profile PDF</h1>
+    <p>The navbar logo and the company profile the footer links to.</p>
+  </div>
+</div>
+
+<div class="cms-content">
+  <div class="cms-loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="!loading">
+    <!-- ============ logo ============ -->
+    <div class="cms-card">
+      <div class="cms-card-head">
+        <div>
+          <h2>Navbar logo</h2>
+          <small>Shown at the top left of every page.</small>
+        </div>
+        <button
+          class="cms-btn cms-btn-sm"
+          type="button"
+          *ngIf="!logos.length"
+          (click)="create('logo')"
+          [disabled]="busy"
+        >
+          Add logo entry
+        </button>
+      </div>
+
+      <div class="cms-card-body">
+        <div class="cms-empty" *ngIf="!logos.length">No logo entry yet.</div>
+
+        <div class="cms-item" *ngFor="let logo of logos">
+          <div class="cms-field">
+            <label>Label (for your reference only)</label>
+            <input type="text" [(ngModel)]="logo.name" />
+          </div>
+
+          <app-media-picker
+            label="Logo image"
+            scope="image"
+            accept="image/*"
+            [previewUrl]="logo.fileUrl"
+            [mediaId]="logo.fileId"
+            [disabled]="busy"
+            (changed)="onFile(logo, $event)"
+          ></app-media-picker>
+
+          <div class="cms-btn-row">
+            <label class="cms-check">
+              <input type="checkbox" [(ngModel)]="logo.isPublished" />
+              Use this logo
+            </label>
+            <button class="cms-btn cms-btn-sm" type="button" (click)="save(logo)" [disabled]="busy">
+              Save
+            </button>
+
+            <ng-container *ngIf="confirmDeleteId !== logo.id">
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="confirmDeleteId = logo.id"
+                [disabled]="busy"
+              >
+                Delete entry
+              </button>
+            </ng-container>
+            <ng-container *ngIf="confirmDeleteId === logo.id">
+              <span class="cms-inline-confirm">Delete this entry?</span>
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="delete(logo)"
+                [disabled]="busy"
+              >
+                Yes, delete
+              </button>
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-sm"
+                type="button"
+                (click)="confirmDeleteId = null"
+              >
+                Keep
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ company profile pdf ============ -->
+    <div class="cms-card">
+      <div class="cms-card-head">
+        <div>
+          <h2>Company profile PDF</h2>
+          <small>
+            The footer download button looks for the entry named
+            <strong>{{ profileName }}</strong> — keep that name so the button appears.
+          </small>
+        </div>
+        <button class="cms-btn cms-btn-sm" type="button" (click)="create('pdf')" [disabled]="busy">
+          Add PDF entry
+        </button>
+      </div>
+
+      <div class="cms-card-body">
+        <div class="cms-empty" *ngIf="!pdfs.length">No PDF entry yet.</div>
+
+        <div class="cms-item" *ngFor="let pdf of pdfs">
+          <div class="cms-note" *ngIf="pdf.name === profileName && !pdf.fileUrl">
+            No file attached yet, so the footer download button is hidden.
+          </div>
+
+          <div class="cms-row">
+            <div class="cms-field" style="flex: 2 1 220px">
+              <label>Name</label>
+              <input type="text" [(ngModel)]="pdf.name" />
+              <div class="cms-hint" *ngIf="pdf.name !== profileName">
+                The footer only reads the entry named “{{ profileName }}”.
+              </div>
+            </div>
+            <div class="cms-field" style="flex: 3 1 260px">
+              <label>Description</label>
+              <input type="text" [(ngModel)]="pdf.description" />
+            </div>
+          </div>
+
+          <app-media-picker
+            label="PDF file"
+            scope="all"
+            accept="application/pdf"
+            [previewUrl]="null"
+            [mediaId]="pdf.fileId"
+            [disabled]="busy"
+            (changed)="onFile(pdf, $event)"
+          ></app-media-picker>
+
+          <div class="cms-muted" style="font-size: 12.5px; margin-bottom: 12px" *ngIf="pdf.fileUrl">
+            Attached: <strong>{{ pdf.fileName }}</strong>
+            &nbsp;·&nbsp;
+            <a [href]="pdf.fileUrl" target="_blank">open ↗</a>
+          </div>
+
+          <div class="cms-btn-row">
+            <label class="cms-check">
+              <input type="checkbox" [(ngModel)]="pdf.isPublished" />
+              Available for download
+            </label>
+            <button class="cms-btn cms-btn-sm" type="button" (click)="save(pdf)" [disabled]="busy">
+              Save
+            </button>
+
+            <ng-container *ngIf="confirmDeleteId !== pdf.id">
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="confirmDeleteId = pdf.id"
+                [disabled]="busy"
+              >
+                Delete entry
+              </button>
+            </ng-container>
+            <ng-container *ngIf="confirmDeleteId === pdf.id">
+              <span class="cms-inline-confirm">Delete this entry?</span>
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="delete(pdf)"
+                [disabled]="busy"
+              >
+                Yes, delete
+              </button>
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-sm"
+                type="button"
+                (click)="confirmDeleteId = null"
+              >
+                Keep
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -55,10 +55,10 @@
       <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" *ngIf="!isLoading">
         <ngb-panel *ngFor="let recruitment of recruitments">
           <ng-template ngbPanelTitle>
-            <span>{{ recruitment.attributes.position }}</span>
+            <span>{{ recruitment.position }}</span>
           </ng-template>
           <ng-template ngbPanelContent>
-            <div [innerHTML]="recruitment.attributes.description"></div>
+            <div [innerHTML]="recruitment.description"></div>
           </ng-template>
         </ngb-panel>
       </ngb-accordion>

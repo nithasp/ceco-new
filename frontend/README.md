@@ -1,27 +1,41 @@
 # Ceco
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.3.3.
+The public website and the `/admin` CMS. Angular 13, generated with Angular CLI 13.3.3.
+
+The site reads its content from the API in `../backend`, so **start that first** — see
+`../backend/README.md`. With no API running, the pages render but the carousel, projects, job list,
+logo and profile download stay empty.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+`npm start` (or `ng serve`), then open `http://localhost:4200/`. The app reloads on change.
 
-## Code scaffolding
+| Route          | What it is                                       |
+| -------------- | ------------------------------------------------ |
+| `/`            | Home                                             |
+| `/installation`, `/design`, `/commissioning`, `/maintenance` | The service pages   |
+| `/job`         | Career page                                      |
+| `/admin`       | The CMS — redirects to `/admin/login` without a session |
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Where the API lives
+
+`src/environments/environment.ts` holds `apiUrl` for development and
+`environment.prod.ts` the one used by `ng build`. Set the production value before deploying.
+
+Uploaded files come back as absolute URLs, so there is no second base URL to keep in step.
+
+## How it is put together
+
+- `src/app/services/cms.service.ts` — the public content the site reads
+- `src/app/services/auth.service.ts` — sign in, sign out, and renewing the session
+- `src/app/guards/auth.guard.ts` — keeps `/admin` behind a session
+- `src/app/http.interceptor.ts` — attaches the bearer token, and retries once after renewing an
+  expired one
+- `src/app/admin/` — the CMS, a lazily loaded module so the public site never downloads it
+
+The access token is kept in memory only. On reload the session is restored from the HttpOnly refresh
+cookie, which JavaScript cannot read.
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+`npm run build` writes to `dist/`. `npm test` runs the unit tests through Karma.

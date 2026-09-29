@@ -1,28 +1,58 @@
-import { Injectable } from '@angular/core';
 import {
-  HttpRequest,
-  HttpHandler,
+  HttpErrorResponse,
   HttpEvent,
-  HttpInterceptor
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable, Injector } from '@angular/core';
+import { Observable, throwError } from 'rxjs';
+import { catchError, switchMap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { AuthService } from './services/auth.service';
+
+const AUTH_PATHS = ['/auth/login', '/auth/refresh', '/auth/logout'];
 
 @Injectable()
 export class httpInterceptor implements HttpInterceptor {
+  // AuthService itself uses HttpClient, so resolving it here rather than in the constructor avoids
+  // the circular dependency Angular would otherwise report at start-up
+  constructor(private injector: Injector) {}
 
-  constructor() {}
-
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(this.addAuthToken(request));
+  private get auth(): AuthService {
+    return this.injector.get(AuthService);
   }
 
-  addAuthToken(request: HttpRequest<any>) {
-    const token = '3ebe72d1b695d525fe0c91c099fc87f663ba5dcd9395b1432f0a17e47c452079c7e76b8ac925155fb8cee72b786515f295d86125f3c266255321a79b149c90fc8c88742e3da1056a42dfdc1adeced4f3557bc80e8c81a1e538a9302f63d62d3795934c6c195faad1c28d2f7e5b96744324f4e2d5d0541c8687e83defa274e34c';
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if (!request.url.startsWith(environment.apiUrl)) return next.handle(request);
 
+    const isAuthCall = AUTH_PATHS.some((path) => request.url.includes(path));
+    const authorized = this.withToken(request);
+
+    return next.handle(authorized).pipe(
+      catchError((error: HttpErrorResponse) => {
+        // A 15-minute access token expires while the CMS is open; one refresh and one retry keeps
+        // the editor working instead of bouncing them to the login page mid-edit.
+        const expired = error.status === 401 && error.error?.code === 'token_expired';
+        if (!expired || isAuthCall) return throwError(() => error);
+
+        return this.auth.refresh().pipe(
+          switchMap((renewed) => {
+            if (!renewed) return throwError(() => error);
+            return next.handle(this.withToken(request));
+          }),
+        );
+      }),
+    );
+  }
+
+  // The cookie is scoped to the auth routes, so withCredentials only matters there, but setting it
+  // for the whole API keeps the rule in one place
+  private withToken(request: HttpRequest<unknown>): HttpRequest<unknown> {
+    const token = this.auth.token;
     return request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-    })
+      withCredentials: true,
+      ...(token ? { setHeaders: { Authorization: `Bearer ${token}` } } : {}),
+    });
   }
 }

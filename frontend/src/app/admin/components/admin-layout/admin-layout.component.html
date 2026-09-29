@@ -1,0 +1,53 @@
+<div class="cms">
+  <div class="cms-toasts">
+    <div
+      class="cms-toast"
+      *ngFor="let toast of toasts$ | async"
+      [ngClass]="{ 'is-error': toast.kind === 'error', 'is-success': toast.kind === 'success' }"
+    >
+      <span style="flex: 1">{{ toast.message }}</span>
+      <button type="button" (click)="dismiss(toast.id)" aria-label="Dismiss">&times;</button>
+    </div>
+  </div>
+
+  <div class="cms-shell">
+    <aside class="cms-sidebar">
+      <div class="cms-brand">
+        <strong>CECO</strong>
+        <span>Content manager</span>
+      </div>
+
+      <nav class="cms-nav">
+        <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          Overview
+        </a>
+
+        <div class="cms-nav-label">Pages</div>
+        <a routerLink="/admin/home" routerLinkActive="active">Home page</a>
+        <a routerLink="/admin/previous-work" routerLinkActive="active">Previous work</a>
+        <a routerLink="/admin/job" routerLinkActive="active">Career / jobs</a>
+
+        <div class="cms-nav-label">Site</div>
+        <a routerLink="/admin/documents" routerLinkActive="active">Logo &amp; profile PDF</a>
+        <a routerLink="/admin/media" routerLinkActive="active">Media library</a>
+
+        <div class="cms-nav-label">Site preview</div>
+        <a routerLink="/" target="_blank">Open website ↗</a>
+      </nav>
+
+      <div class="cms-sidebar-footer">
+        <ng-container *ngIf="user$ | async as user">
+          <div class="cms-who">{{ user.firstName }} {{ user.lastName }}</div>
+          <div style="margin-bottom: 10px">{{ user.username }} · {{ user.role }}</div>
+        </ng-container>
+        <button class="cms-btn cms-btn-secondary cms-btn-sm" type="button" (click)="signOut()" [disabled]="signingOut">
+          {{ signingOut ? "Signing out…" : "Sign out" }}
+        </button>
+      </div>
+    </aside>
+
+    <main class="cms-main">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

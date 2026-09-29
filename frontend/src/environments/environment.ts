@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  // Where the content API runs. The API returns absolute URLs for every uploaded file, so there is
+  // no second base URL to keep in step.
+  apiUrl: 'http://localhost:3000',
+  apiPrefix: '/api/v1',
 };
 
 /*

@@ -1,0 +1,174 @@
+<div class="cms-topbar">
+  <div>
+    <h1>Career / jobs</h1>
+    <p>The openings listed in the accordion on the career page.</p>
+  </div>
+
+  <div class="cms-tabs">
+    <button type="button" [ngClass]="{ active: locale === 'th' }" (click)="switchLocale('th')">ไทย</button>
+    <button type="button" [ngClass]="{ active: locale === 'en' }" (click)="switchLocale('en')">English</button>
+  </div>
+</div>
+
+<div class="cms-content">
+  <div class="cms-loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="!loading">
+    <div class="cms-card">
+      <div class="cms-card-head">
+        <div>
+          <h2>Job openings</h2>
+          <small>The description accepts HTML — use &lt;p&gt;, &lt;ul&gt; and &lt;li&gt; for the list of requirements.</small>
+        </div>
+        <button class="cms-btn cms-btn-sm" type="button" (click)="showNewJob = !showNewJob" [disabled]="busy">
+          {{ showNewJob ? "Cancel" : "Add job" }}
+        </button>
+      </div>
+
+      <div class="cms-card-body">
+        <div class="cms-item" *ngIf="showNewJob" style="background: #fafbfc">
+          <div class="cms-row">
+            <div class="cms-field" style="flex: 3 1 260px">
+              <label for="new-job-position">Job title</label>
+              <input id="new-job-position" type="text" [(ngModel)]="newJob.position" />
+            </div>
+            <div class="cms-field" style="flex: 1 1 110px">
+              <label for="new-job-amount">Positions open</label>
+              <input id="new-job-amount" type="number" min="0" [(ngModel)]="newJob.amount" />
+            </div>
+          </div>
+          <div class="cms-field">
+            <label for="new-job-desc">Description (HTML)</label>
+            <textarea id="new-job-desc" class="cms-code" [(ngModel)]="newJob.description"></textarea>
+          </div>
+          <div class="cms-btn-row">
+            <label class="cms-check">
+              <input type="checkbox" [(ngModel)]="newJob.isPublished" />
+              Visible on the website
+            </label>
+            <button
+              class="cms-btn cms-btn-sm"
+              type="button"
+              (click)="addJob()"
+              [disabled]="busy || !newJob.position.trim()"
+            >
+              Add job
+            </button>
+          </div>
+        </div>
+
+        <div class="cms-empty" *ngIf="!jobs.length">
+          No openings for this language yet.
+        </div>
+
+        <div class="cms-item" *ngFor="let job of jobs; let i = index">
+          <div class="cms-item-head" style="margin-bottom: 12px">
+            <div class="cms-btn-row">
+              <span class="cms-badge">#{{ i + 1 }}</span>
+              <span class="cms-badge" [ngClass]="job.isPublished ? 'is-live' : 'is-draft'">
+                {{ job.isPublished ? "live" : "draft" }}
+              </span>
+            </div>
+            <div class="cms-btn-row">
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-icon"
+                type="button"
+                (click)="moveJob(i, -1)"
+                [disabled]="busy || i === 0"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-icon"
+                type="button"
+                (click)="moveJob(i, 1)"
+                [disabled]="busy || i === jobs.length - 1"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </div>
+
+          <div class="cms-row">
+            <div class="cms-field" style="flex: 3 1 260px">
+              <label>Job title</label>
+              <input type="text" [(ngModel)]="job.position" />
+            </div>
+            <div class="cms-field" style="flex: 1 1 110px">
+              <label>Positions open</label>
+              <input type="number" min="0" [(ngModel)]="job.amount" />
+            </div>
+          </div>
+
+          <div class="cms-field">
+            <label>Description (HTML)</label>
+            <textarea class="cms-code" [(ngModel)]="job.description"></textarea>
+            <div class="cms-hint">
+              <button
+                type="button"
+                class="cms-btn cms-btn-secondary cms-btn-sm"
+                style="margin-top: 6px"
+                (click)="togglePreview(job)"
+              >
+                {{ previewJobId === job.id ? "Hide preview" : "Preview" }}
+              </button>
+            </div>
+          </div>
+
+          <div
+            *ngIf="previewJobId === job.id"
+            style="
+              border: 1px solid var(--cms-border);
+              border-radius: 6px;
+              padding: 12px;
+              margin-bottom: 14px;
+              background: #fafbfc;
+            "
+          >
+            <div class="cms-muted" style="font-size: 11.5px; margin-bottom: 8px">
+              How it will read on the career page
+            </div>
+            <div [innerHTML]="job.description"></div>
+          </div>
+
+          <div class="cms-btn-row">
+            <label class="cms-check">
+              <input type="checkbox" [(ngModel)]="job.isPublished" />
+              Visible on the website
+            </label>
+            <button class="cms-btn cms-btn-sm" type="button" (click)="saveJob(job)" [disabled]="busy">
+              Save
+            </button>
+
+            <ng-container *ngIf="confirmJobId !== job.id">
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="confirmJobId = job.id"
+                [disabled]="busy"
+              >
+                Delete
+              </button>
+            </ng-container>
+            <ng-container *ngIf="confirmJobId === job.id">
+              <span class="cms-inline-confirm">Delete this job?</span>
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="deleteJob(job)"
+                [disabled]="busy"
+              >
+                Yes, delete
+              </button>
+              <button class="cms-btn cms-btn-secondary cms-btn-sm" type="button" (click)="confirmJobId = null">
+                Keep
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CmsService } from 'src/app/services/cms.service';
 import SwiperCore, {
   Parallax,
@@ -7,7 +8,7 @@ import SwiperCore, {
   Autoplay,
   EffectFade,
 } from 'swiper';
-import { ApiResponse, RecentProject } from 'src/app/interfaces';
+import { RecentProject } from 'src/app/interfaces';
 
 SwiperCore.use([Parallax, Pagination, Navigation, Autoplay, EffectFade]);
 @Component({
@@ -16,8 +17,7 @@ SwiperCore.use([Parallax, Pagination, Navigation, Autoplay, EffectFade]);
   styleUrls: ['./carousel2.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class Carousel2Component implements OnInit {
-  url: string = '';
+export class Carousel2Component implements OnInit, OnDestroy {
   recentProjectSlides: RecentProject[] = [];
   swiperConfig = {
     navigation: true,
@@ -31,19 +31,27 @@ export class Carousel2Component implements OnInit {
     speed: 500,
   };
 
+  private readonly subscriptions = new Subscription();
+
   constructor(private cmsService: CmsService) {}
 
   ngOnInit(): void {
-    this.url = this.cmsService.url;
-    this.cmsService
-      .getRecentProject(this.cmsService.currentLanguage.value)
-      .subscribe((res: ApiResponse<RecentProject>) => {
-        this.cmsService
-          .getRecentProjectGlobalSlide()
-          .subscribe((value: RecentProject[]) => {
-            this.recentProjectSlides = value;
-          });
-        this.cmsService.recentProjectGlobalSlide.next(res.data);
-      });
+    this.subscriptions.add(
+      this.cmsService.getRecentProjectGlobalSlide().subscribe((value: RecentProject[]) => {
+        this.recentProjectSlides = value;
+      }),
+    );
+
+    this.subscriptions.add(
+      this.cmsService
+        .getRecentProject(this.cmsService.currentLanguage.value)
+        .subscribe((projects: RecentProject[]) => {
+          this.cmsService.recentProjectGlobalSlide.next(projects);
+        }),
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

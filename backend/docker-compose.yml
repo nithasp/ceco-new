@@ -1,0 +1,41 @@
+name: ceco-project
+
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: ceco-mysql
+    restart: always
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ceco_root_pass
+      MYSQL_DATABASE: ceco_dev
+      MYSQL_USER: ceco_user
+      MYSQL_PASSWORD: ceco_pass
+    ports:
+      # Published to this machine only, so the database is not reachable from the local network
+      - '127.0.0.1:3306:3306'
+    volumes:
+      - mysql84_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -u root -p"$$MYSQL_ROOT_PASSWORD" --silent']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  adminer:
+    image: adminer
+    container_name: ceco-adminer
+    restart: always
+    ports:
+      # 8080 is often already taken on a dev machine, so the browser side is moved up one
+      - '127.0.0.1:8081:8080'
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql84_data:

@@ -9,7 +9,7 @@
       >
         <div class="navbar-item1-1">
           <a class="navbar-brand" routerLink="/">
-            <img [src]="uploadUrl" alt="" class="ceco-logo" />
+            <img *ngIf="logoUrl" [src]="logoUrl" alt="CECO" class="ceco-logo" />
           </a>
         </div>
 

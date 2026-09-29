@@ -61,6 +61,7 @@
         {{ "footer.download_title" | translate }}
       </p>
       <a
+        *ngIf="companyProfileUrl"
         type="button"
         class="btn btn-lg"
         [href]="companyProfileUrl"

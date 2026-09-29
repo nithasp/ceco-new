@@ -1,0 +1,77 @@
+import { Request } from 'express';
+import { UserRole } from './user.types';
+
+export const AUDIT_ACTIONS = [
+  'CREATE',
+  'READ',
+  'UPDATE',
+  'DELETE',
+  'LOGIN',
+  'LOGIN_FAILED',
+  'LOGOUT',
+  'SECURITY',
+] as const;
+
+export type AuditAction = (typeof AUDIT_ACTIONS)[number];
+
+export const AUDIT_RESULTS = ['success', 'failure'] as const;
+
+export type AuditResult = (typeof AUDIT_RESULTS)[number];
+
+export type AuditDetails = Record<string, string | number | boolean | string[]>;
+
+export type AuditDetailsFn = (req: Request) => AuditDetails | undefined;
+
+export interface AuditRule {
+  method: string;
+  pattern: RegExp;
+  event: string | null;
+  details?: AuditDetailsFn | undefined;
+}
+
+export interface AuditSource {
+  method?: string | null | undefined;
+  path?: string | null | undefined;
+  ipAddress?: string | null | undefined;
+  userAgent?: string | null | undefined;
+}
+
+export interface NewAuditLog extends AuditSource {
+  userId?: number | null | undefined;
+  username?: string | null | undefined;
+  userRole?: UserRole | null | undefined;
+  action: AuditAction;
+  event: string;
+  statusCode?: number | null | undefined;
+  details?: AuditDetails | null | undefined;
+}
+
+export type AuditAnnotation = Pick<
+  NewAuditLog,
+  'action' | 'event' | 'userId' | 'username' | 'userRole' | 'details'
+>;
+
+export interface AuditLog {
+  id: number;
+  createdAt: Date;
+  userId: number | null;
+  username: string | null;
+  userRole: UserRole | null;
+  action: AuditAction;
+  event: string;
+  method: string | null;
+  path: string | null;
+  statusCode: number | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  details: AuditDetails | null;
+}
+
+export interface AuditLogFilters {
+  userId?: number | undefined;
+  username?: string | undefined;
+  actions?: AuditAction[] | undefined;
+  result?: AuditResult | undefined;
+  from?: Date | undefined;
+  to?: Date | undefined;
+}

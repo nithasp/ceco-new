@@ -1,0 +1,317 @@
+<div class="cms-topbar">
+  <div>
+    <h1>Home page</h1>
+    <p>The hero carousel and the “Recently Projects” slider.</p>
+  </div>
+
+  <div class="cms-tabs">
+    <button type="button" [ngClass]="{ active: locale === 'th' }" (click)="switchLocale('th')">ไทย</button>
+    <button type="button" [ngClass]="{ active: locale === 'en' }" (click)="switchLocale('en')">English</button>
+  </div>
+</div>
+
+<div class="cms-content">
+  <div class="cms-loading" *ngIf="loading">Loading…</div>
+
+  <ng-container *ngIf="!loading">
+    <!-- ============ hero carousel ============ -->
+    <div class="cms-card">
+      <div class="cms-card-head">
+        <div>
+          <h2>Hero carousel</h2>
+          <small>The full-width slider at the top of the home page.</small>
+        </div>
+        <button
+          class="cms-btn cms-btn-sm"
+          type="button"
+          *ngIf="header"
+          (click)="showNewSlide = !showNewSlide"
+          [disabled]="busy"
+        >
+          {{ showNewSlide ? "Cancel" : "Add slide" }}
+        </button>
+      </div>
+
+      <div class="cms-card-body">
+        <ng-container *ngIf="!header">
+          <div class="cms-empty">
+            There is no carousel for this language yet.
+            <div style="margin-top: 12px">
+              <button class="cms-btn cms-btn-sm" type="button" (click)="createHeader()" [disabled]="busy">
+                Create carousel
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="header">
+          <!-- new slide form -->
+          <div class="cms-item" *ngIf="showNewSlide" style="background: #fafbfc">
+            <div class="cms-field">
+              <label for="new-slide-title">Title</label>
+              <input id="new-slide-title" type="text" [(ngModel)]="newSlide.title" />
+            </div>
+            <div class="cms-field">
+              <label for="new-slide-desc">Description</label>
+              <textarea id="new-slide-desc" [(ngModel)]="newSlide.description"></textarea>
+            </div>
+            <app-media-picker
+              label="Background image"
+              [previewUrl]="newSlide.previewUrl"
+              [mediaId]="newSlide.imageId"
+              (changed)="onNewSlideImage($event)"
+            ></app-media-picker>
+            <div class="cms-btn-row">
+              <label class="cms-check">
+                <input type="checkbox" [(ngModel)]="newSlide.isPublished" />
+                Visible on the website
+              </label>
+              <button
+                class="cms-btn cms-btn-sm"
+                type="button"
+                (click)="addSlide()"
+                [disabled]="busy || !newSlide.title.trim()"
+              >
+                Add slide
+              </button>
+            </div>
+          </div>
+
+          <div class="cms-empty" *ngIf="!header.slides.length">
+            No slides yet. Use “Add slide” to create the first one.
+          </div>
+
+          <!-- existing slides -->
+          <div class="cms-item" *ngFor="let slide of header.slides; let i = index">
+            <div class="cms-item-head" style="margin-bottom: 12px">
+              <div class="cms-btn-row">
+                <span class="cms-badge">#{{ i + 1 }}</span>
+                <span class="cms-badge" [ngClass]="slide.isPublished ? 'is-live' : 'is-draft'">
+                  {{ slide.isPublished ? "live" : "draft" }}
+                </span>
+              </div>
+              <div class="cms-btn-row">
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-icon"
+                  type="button"
+                  (click)="moveSlide(i, -1)"
+                  [disabled]="busy || i === 0"
+                  title="Move up"
+                >
+                  ↑
+                </button>
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-icon"
+                  type="button"
+                  (click)="moveSlide(i, 1)"
+                  [disabled]="busy || i === header.slides.length - 1"
+                  title="Move down"
+                >
+                  ↓
+                </button>
+              </div>
+            </div>
+
+            <div class="cms-field">
+              <label>Title</label>
+              <input type="text" [(ngModel)]="slide.title" />
+            </div>
+            <div class="cms-field">
+              <label>Description</label>
+              <textarea [(ngModel)]="slide.description"></textarea>
+            </div>
+
+            <app-media-picker
+              label="Background image"
+              [previewUrl]="slide.imageUrl"
+              [mediaId]="slide.imageId"
+              [disabled]="busy"
+              (changed)="onSlideImage(slide, $event)"
+            ></app-media-picker>
+
+            <div class="cms-btn-row">
+              <label class="cms-check">
+                <input type="checkbox" [(ngModel)]="slide.isPublished" />
+                Visible on the website
+              </label>
+              <button class="cms-btn cms-btn-sm" type="button" (click)="saveSlide(slide)" [disabled]="busy">
+                Save
+              </button>
+
+              <ng-container *ngIf="confirmSlideId !== slide.id">
+                <button
+                  class="cms-btn cms-btn-danger cms-btn-sm"
+                  type="button"
+                  (click)="confirmSlideId = slide.id"
+                  [disabled]="busy"
+                >
+                  Delete
+                </button>
+              </ng-container>
+              <ng-container *ngIf="confirmSlideId === slide.id">
+                <span class="cms-inline-confirm">Delete this slide?</span>
+                <button
+                  class="cms-btn cms-btn-danger cms-btn-sm"
+                  type="button"
+                  (click)="deleteSlide(slide)"
+                  [disabled]="busy"
+                >
+                  Yes, delete
+                </button>
+                <button
+                  class="cms-btn cms-btn-secondary cms-btn-sm"
+                  type="button"
+                  (click)="confirmSlideId = null"
+                >
+                  Keep
+                </button>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- ============ recent projects ============ -->
+    <div class="cms-card">
+      <div class="cms-card-head">
+        <div>
+          <h2>Recently Projects</h2>
+          <small>The image slider further down the home page.</small>
+        </div>
+        <button
+          class="cms-btn cms-btn-sm"
+          type="button"
+          (click)="showNewProject = !showNewProject"
+          [disabled]="busy"
+        >
+          {{ showNewProject ? "Cancel" : "Add project" }}
+        </button>
+      </div>
+
+      <div class="cms-card-body">
+        <div class="cms-item" *ngIf="showNewProject" style="background: #fafbfc">
+          <div class="cms-field">
+            <label for="new-project-name">Name</label>
+            <input id="new-project-name" type="text" [(ngModel)]="newProject.name" />
+          </div>
+          <div class="cms-field">
+            <label for="new-project-desc">Description</label>
+            <textarea id="new-project-desc" [(ngModel)]="newProject.description"></textarea>
+          </div>
+          <app-media-picker
+            label="Project image"
+            [previewUrl]="newProject.previewUrl"
+            [mediaId]="newProject.imageId"
+            (changed)="onNewProjectImage($event)"
+          ></app-media-picker>
+          <div class="cms-btn-row">
+            <label class="cms-check">
+              <input type="checkbox" [(ngModel)]="newProject.isPublished" />
+              Visible on the website
+            </label>
+            <button
+              class="cms-btn cms-btn-sm"
+              type="button"
+              (click)="addProject()"
+              [disabled]="busy || !newProject.name.trim()"
+            >
+              Add project
+            </button>
+          </div>
+        </div>
+
+        <div class="cms-empty" *ngIf="!projects.length">
+          No projects yet for this language.
+        </div>
+
+        <div class="cms-item" *ngFor="let project of projects; let i = index">
+          <div class="cms-item-head" style="margin-bottom: 12px">
+            <div class="cms-btn-row">
+              <span class="cms-badge">#{{ i + 1 }}</span>
+              <span class="cms-badge" [ngClass]="project.isPublished ? 'is-live' : 'is-draft'">
+                {{ project.isPublished ? "live" : "draft" }}
+              </span>
+            </div>
+            <div class="cms-btn-row">
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-icon"
+                type="button"
+                (click)="moveProject(i, -1)"
+                [disabled]="busy || i === 0"
+                title="Move up"
+              >
+                ↑
+              </button>
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-icon"
+                type="button"
+                (click)="moveProject(i, 1)"
+                [disabled]="busy || i === projects.length - 1"
+                title="Move down"
+              >
+                ↓
+              </button>
+            </div>
+          </div>
+
+          <div class="cms-field">
+            <label>Name</label>
+            <input type="text" [(ngModel)]="project.name" />
+          </div>
+          <div class="cms-field">
+            <label>Description</label>
+            <textarea [(ngModel)]="project.description"></textarea>
+          </div>
+
+          <app-media-picker
+            label="Project image"
+            [previewUrl]="project.imageUrl"
+            [mediaId]="project.imageId"
+            [disabled]="busy"
+            (changed)="onProjectImage(project, $event)"
+          ></app-media-picker>
+
+          <div class="cms-btn-row">
+            <label class="cms-check">
+              <input type="checkbox" [(ngModel)]="project.isPublished" />
+              Visible on the website
+            </label>
+            <button class="cms-btn cms-btn-sm" type="button" (click)="saveProject(project)" [disabled]="busy">
+              Save
+            </button>
+
+            <ng-container *ngIf="confirmProjectId !== project.id">
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="confirmProjectId = project.id"
+                [disabled]="busy"
+              >
+                Delete
+              </button>
+            </ng-container>
+            <ng-container *ngIf="confirmProjectId === project.id">
+              <span class="cms-inline-confirm">Delete this project?</span>
+              <button
+                class="cms-btn cms-btn-danger cms-btn-sm"
+                type="button"
+                (click)="deleteProject(project)"
+                [disabled]="busy"
+              >
+                Yes, delete
+              </button>
+              <button
+                class="cms-btn cms-btn-secondary cms-btn-sm"
+                type="button"
+                (click)="confirmProjectId = null"
+              >
+                Keep
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

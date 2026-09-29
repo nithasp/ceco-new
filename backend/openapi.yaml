@@ -1,0 +1,1336 @@
+openapi: 3.0.3
+
+info:
+  title: CECO Content API
+  version: 1.0.0
+  description: |
+    Content API and CMS backend for the CECO website.
+
+    **Public routes** (`/api/v1/content/*`) are open and read-only — they are what the website
+    itself calls, and they return published rows only. Every one takes `?locale=th|en`, because the
+    copy is stored once per language rather than translated in the browser.
+
+    **Admin routes** (`/api/v1/admin/*`) need a bearer access token from `POST /auth/login` and an
+    account whose role is `admin`. The role is read from the database on every request, so a demoted
+    account loses access immediately rather than when its token expires.
+
+    **Sessions.** `login` returns a short-lived access token in the body and sets an HttpOnly
+    `refreshToken` cookie scoped to `/api/v1/auth`. JavaScript cannot read that cookie, so an XSS bug
+    in the frontend cannot steal a session. `POST /auth/refresh` exchanges it for a new pair and
+    rotates it; replaying an already-rotated token outside a short grace window revokes the whole
+    session family.
+
+    There is no register route: the site has a single editor account created by `npm run seed:admin`.
+
+servers:
+  - url: http://localhost:3000
+    description: Local development
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Account
+  - name: Content (public)
+  - name: Admin · media
+  - name: Admin · home carousel
+  - name: Admin · recent projects
+  - name: Admin · previous work
+  - name: Admin · jobs
+  - name: Admin · documents
+  - name: Admin · audit log
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Locale:
+      name: locale
+      in: query
+      schema: { type: string, enum: [th, en], default: th }
+      description: Which language's content to return.
+    LocaleOptional:
+      name: locale
+      in: query
+      schema: { type: string, enum: [th, en] }
+      description: Limit to one language. Omit for both.
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 50 }
+    Offset:
+      name: offset
+      in: query
+      schema: { type: integer, minimum: 0, default: 0 }
+
+  schemas:
+    Envelope:
+      type: object
+      properties:
+        status: { type: integer, example: 200 }
+        message: { type: string }
+        data: {}
+        meta:
+          type: object
+          nullable: true
+          properties:
+            limit: { type: integer }
+            offset: { type: integer }
+            total: { type: integer }
+
+    Error:
+      type: object
+      properties:
+        status: { type: integer, example: 400 }
+        message: { type: string, example: title is required }
+        data: { type: string, nullable: true, example: null }
+        code:
+          type: string
+          enum:
+            [
+              bad_request,
+              invalid_request,
+              no_token,
+              token_expired,
+              token_invalid,
+              invalid_credentials,
+              forbidden,
+              not_found,
+              conflict,
+              payload_too_large,
+              unsupported_media_type,
+              rate_limited,
+              storage_error,
+              internal_error,
+            ]
+
+    User:
+      type: object
+      properties:
+        id: { type: integer }
+        firstName: { type: string }
+        lastName: { type: string }
+        username: { type: string }
+        role: { type: string, enum: [editor, admin] }
+
+    Session:
+      type: object
+      description: The refresh token is not here — it travels in an HttpOnly cookie.
+      properties:
+        user: { $ref: '#/components/schemas/User' }
+        accessToken: { type: string }
+
+    Media:
+      type: object
+      properties:
+        id: { type: integer }
+        key: { type: string, description: Object key in the bucket, or path on disk }
+        url: { type: string, description: Absolute URL a browser can load }
+        name: { type: string }
+        alternativeText: { type: string, nullable: true }
+        caption: { type: string, nullable: true }
+        mime: { type: string }
+        ext: { type: string }
+        size: { type: integer, description: Bytes }
+        width: { type: integer, nullable: true }
+        height: { type: integer, nullable: true }
+        provider: { type: string, enum: [r2, local] }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    HeaderSlide:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string, nullable: true }
+        position: { type: integer }
+        isPublished: { type: boolean }
+        imageId: { type: integer, nullable: true }
+        imageUrl: { type: string, nullable: true }
+        imageAlt: { type: string, nullable: true }
+
+    SiteHeader:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        locale: { type: string, enum: [th, en] }
+        slides:
+          type: array
+          items: { $ref: '#/components/schemas/HeaderSlide' }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    RecentProject:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        locale: { type: string, enum: [th, en] }
+        position: { type: integer }
+        isPublished: { type: boolean }
+        imageId: { type: integer, nullable: true }
+        imageUrl: { type: string, nullable: true }
+        imageAlt: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    ExperienceWork:
+      type: object
+      properties:
+        id: { type: integer }
+        description: { type: string }
+        year: { type: integer, nullable: true }
+        position: { type: integer }
+
+    ExperienceCompany:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        position: { type: integer }
+        works:
+          type: array
+          items: { $ref: '#/components/schemas/ExperienceWork' }
+
+    Experience:
+      type: object
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [installation, design, commission, maintenance] }
+        locale: { type: string, enum: [th, en] }
+        position: { type: integer }
+        companies:
+          type: array
+          items: { $ref: '#/components/schemas/ExperienceCompany' }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    Recruitment:
+      type: object
+      properties:
+        id: { type: integer }
+        position: { type: string, description: The job title }
+        description: { type: string, nullable: true, description: Rich text; Angular sanitizes it }
+        amount: { type: integer, nullable: true }
+        priority: { type: integer, description: Sort order }
+        locale: { type: string, enum: [th, en] }
+        isPublished: { type: boolean }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    SiteDocument:
+      type: object
+      properties:
+        id: { type: integer }
+        kind: { type: string, enum: [pdf, logo] }
+        name: { type: string }
+        description: { type: string, nullable: true }
+        locale: { type: string, enum: [th, en], nullable: true, description: null means every language }
+        position: { type: integer }
+        isPublished: { type: boolean }
+        fileId: { type: integer, nullable: true }
+        fileUrl: { type: string, nullable: true }
+        fileName: { type: string, nullable: true }
+        fileMime: { type: string, nullable: true }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    AuditLog:
+      type: object
+      properties:
+        id: { type: integer }
+        createdAt: { type: string, format: date-time }
+        userId: { type: integer, nullable: true }
+        username: { type: string, nullable: true }
+        userRole: { type: string, nullable: true }
+        action:
+          type: string
+          enum: [CREATE, READ, UPDATE, DELETE, LOGIN, LOGIN_FAILED, LOGOUT, SECURITY]
+        event: { type: string }
+        method: { type: string, nullable: true }
+        path: { type: string, nullable: true }
+        statusCode: { type: integer, nullable: true }
+        ipAddress: { type: string, nullable: true }
+        userAgent: { type: string, nullable: true }
+        details: { type: object, nullable: true }
+
+    Reorder:
+      type: object
+      required: [ids]
+      description: The ids in their new order. Each may appear once.
+      properties:
+        ids:
+          type: array
+          items: { type: integer, minimum: 1 }
+          minItems: 1
+          maxItems: 200
+
+  responses:
+    Unauthorized:
+      description: Missing, invalid or expired access token
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Signed in, but not an admin
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: No such record
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    BadRequest:
+      description: The body or query failed validation
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: The change collides with an existing record
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+paths:
+  /healthz:
+    get:
+      tags: [Health]
+      summary: Liveness and database check
+      responses:
+        '200':
+          description: Reachable, and the database answered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { status: { type: string, example: ok } }
+        '503': { description: The database did not answer }
+
+  # ---------------------------------------------------------------- auth ----
+
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Sign in
+      description: Returns an access token and sets the HttpOnly refresh cookie.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string, example: admin }
+                password: { type: string, format: password }
+      responses:
+        '200':
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/Session' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { description: Too many attempts }
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Exchange the refresh cookie for a new token pair
+      responses:
+        '200':
+          description: Renewed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/Session' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth]
+      summary: End this session and clear the cookie
+      responses:
+        '200': { description: Signed out }
+
+  /api/v1/auth/logout-all:
+    post:
+      tags: [Auth]
+      summary: Revoke every session of this account
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: All sessions revoked }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: The signed-in account
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: The account
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/User' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/users/me:
+    patch:
+      tags: [Account]
+      summary: Update your own profile
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName: { type: string }
+                lastName: { type: string }
+                username: { type: string }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/User' } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/users/me/password:
+    put:
+      tags: [Account]
+      summary: Change your own password
+      description: Needs the current password, and signs every other session out.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword: { type: string, format: password }
+                newPassword: { type: string, format: password, minLength: 8 }
+      responses:
+        '200':
+          description: Changed; a fresh token pair is issued
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/Session' } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ------------------------------------------------------- public content ----
+
+  /api/v1/content/header:
+    get:
+      tags: [Content (public)]
+      summary: The home page hero carousel
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      responses:
+        '200':
+          description: The carousel, or null when that language has none
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { allOf: [{ $ref: '#/components/schemas/SiteHeader' }], nullable: true }
+
+  /api/v1/content/recent-projects:
+    get:
+      tags: [Content (public)]
+      summary: The "Recently Projects" slider
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      responses:
+        '200':
+          description: Published projects, in display order
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/RecentProject' }
+
+  /api/v1/content/experiences:
+    get:
+      tags: [Content (public)]
+      summary: Every previous-work table for a language
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      responses:
+        '200':
+          description: One entry per service page
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Experience' }
+
+  /api/v1/content/experiences/{type}:
+    get:
+      tags: [Content (public)]
+      summary: One service page's previous-work table
+      parameters:
+        - name: type
+          in: path
+          required: true
+          schema: { type: string, enum: [installation, design, commission, maintenance] }
+        - $ref: '#/components/parameters/Locale'
+      responses:
+        '200':
+          description: The table, or null when there is none
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { allOf: [{ $ref: '#/components/schemas/Experience' }], nullable: true }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/v1/content/recruitments:
+    get:
+      tags: [Content (public)]
+      summary: Open jobs on the career page
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      responses:
+        '200':
+          description: Published jobs, ordered by priority
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Recruitment' }
+
+  /api/v1/content/documents:
+    get:
+      tags: [Content (public)]
+      summary: Site files of one kind
+      parameters:
+        - name: kind
+          in: query
+          schema: { type: string, enum: [pdf, logo], default: pdf }
+        - $ref: '#/components/parameters/LocaleOptional'
+      responses:
+        '200':
+          description: Published entries
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/SiteDocument' }
+
+  /api/v1/content/company-profile:
+    get:
+      tags: [Content (public)]
+      summary: The PDF the footer download button links to
+      description: The entry named "Profile". `fileUrl` is null until a file is attached.
+      responses:
+        '200':
+          description: The entry, or null
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { allOf: [{ $ref: '#/components/schemas/SiteDocument' }], nullable: true }
+
+  /api/v1/content/logo:
+    get:
+      tags: [Content (public)]
+      summary: The navbar logo
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      responses:
+        '200':
+          description: The logo entry, or null
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data: { allOf: [{ $ref: '#/components/schemas/SiteDocument' }], nullable: true }
+
+  # --------------------------------------------------------- admin: media ----
+
+  /api/v1/admin/media:
+    get:
+      tags: [Admin · media]
+      summary: List uploaded files
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string, maxLength: 100 }
+        - name: mimeGroup
+          in: query
+          schema: { type: string, enum: [image, document] }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Files, newest first
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/Media' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Admin · media]
+      summary: Upload a file
+      description: |
+        `multipart/form-data`. The file goes in a field named `file`. Accepted types are webp, jpeg,
+        png, gif, svg, avif and pdf; the extension written into the object key comes from the
+        declared type, never from the filename.
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: { type: string, format: binary }
+                name: { type: string }
+                alternativeText: { type: string }
+                caption: { type: string }
+      responses:
+        '201':
+          description: Stored, and the row created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties: { data: { $ref: '#/components/schemas/Media' } }
+        '413': { description: Larger than MAX_UPLOAD_MB }
+        '415': { description: That file type is not accepted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  /api/v1/admin/media/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · media]
+      summary: One file
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The file }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · media]
+      summary: Rename a file or change its alt text
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                alternativeText: { type: string, nullable: true }
+                caption: { type: string, nullable: true }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · media]
+      summary: Delete a file
+      description: |
+        Refused with 409 while a slide, project or document still points at it. `?force=true`
+        deletes anyway; whatever showed it keeps its row and loses the picture.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: force
+          in: query
+          schema: { type: boolean, default: false }
+      responses:
+        '200': { description: Deleted from storage and the database }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ------------------------------------------------ admin: home carousel ----
+
+  /api/v1/admin/headers:
+    get:
+      tags: [Admin · home carousel]
+      summary: Every carousel, with drafts included
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200':
+          description: One per language
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/SiteHeader' }
+    post:
+      tags: [Admin · home carousel]
+      summary: Create the carousel for a language
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, locale]
+              properties:
+                name: { type: string }
+                locale: { type: string, enum: [th, en] }
+      responses:
+        '201': { description: Created }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /api/v1/admin/headers/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · home carousel]
+      summary: One carousel
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The carousel }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · home carousel]
+      summary: Rename a carousel
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties: { name: { type: string } }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · home carousel]
+      summary: Delete a carousel and its slides
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/admin/headers/{id}/slides:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    post:
+      tags: [Admin · home carousel]
+      summary: Add a slide
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title: { type: string }
+                description: { type: string, nullable: true }
+                imageId: { type: integer, nullable: true }
+                position: { type: integer }
+                isPublished: { type: boolean, default: true }
+      responses:
+        '201': { description: Added }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/admin/headers/{id}/slides/order:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    put:
+      tags: [Admin · home carousel]
+      summary: Reorder the slides of one carousel
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Reorder' }
+      responses:
+        '200': { description: The slides in their new order }
+
+  /api/v1/admin/header-slides/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    patch:
+      tags: [Admin · home carousel]
+      summary: Edit a slide
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title: { type: string }
+                description: { type: string, nullable: true }
+                imageId: { type: integer, nullable: true }
+                position: { type: integer }
+                isPublished: { type: boolean }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · home carousel]
+      summary: Delete a slide
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ----------------------------------------------- admin: recent projects ----
+
+  /api/v1/admin/recent-projects:
+    get:
+      tags: [Admin · recent projects]
+      summary: List projects, drafts included
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/LocaleOptional' }]
+      responses:
+        '200': { description: Projects in display order }
+    post:
+      tags: [Admin · recent projects]
+      summary: Create a project
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, locale]
+              properties:
+                name: { type: string }
+                description: { type: string, nullable: true }
+                locale: { type: string, enum: [th, en] }
+                imageId: { type: integer, nullable: true }
+                position: { type: integer }
+                isPublished: { type: boolean, default: true }
+      responses:
+        '201': { description: Created }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/v1/admin/recent-projects/order:
+    put:
+      tags: [Admin · recent projects]
+      summary: Reorder one language's projects
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Reorder' }
+      responses:
+        '200': { description: The projects in their new order }
+
+  /api/v1/admin/recent-projects/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · recent projects]
+      summary: One project
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The project }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · recent projects]
+      summary: Edit a project
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                description: { type: string, nullable: true }
+                locale: { type: string, enum: [th, en] }
+                imageId: { type: integer, nullable: true }
+                position: { type: integer }
+                isPublished: { type: boolean }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · recent projects]
+      summary: Delete a project
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ------------------------------------------------- admin: previous work ----
+
+  /api/v1/admin/experiences:
+    get:
+      tags: [Admin · previous work]
+      summary: List previous-work tables
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - $ref: '#/components/parameters/LocaleOptional'
+        - name: type
+          in: query
+          schema: { type: string, enum: [installation, design, commission, maintenance] }
+      responses:
+        '200': { description: Tables with their companies and work rows }
+    post:
+      tags: [Admin · previous work]
+      summary: Create the table for a service page and language
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, locale]
+              properties:
+                type: { type: string, enum: [installation, design, commission, maintenance] }
+                locale: { type: string, enum: [th, en] }
+      responses:
+        '201': { description: Created }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  /api/v1/admin/experiences/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · previous work]
+      summary: One table
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The table }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · previous work]
+      summary: Change a table's service type or order
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type: { type: string, enum: [installation, design, commission, maintenance] }
+                position: { type: integer }
+      responses:
+        '200': { description: Updated }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      tags: [Admin · previous work]
+      summary: Delete a table, its companies and their work rows
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/admin/experiences/{id}/companies:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    post:
+      tags: [Admin · previous work]
+      summary: Add a company to a table
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name: { type: string }
+                position: { type: integer }
+      responses:
+        '201': { description: Added }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/admin/experiences/{id}/companies/order:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    put:
+      tags: [Admin · previous work]
+      summary: Reorder the companies of one table
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Reorder' }
+      responses:
+        '200': { description: The table in its new order }
+
+  /api/v1/admin/experience-companies/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · previous work]
+      summary: One company with its work rows
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The company }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · previous work]
+      summary: Rename or reorder a company
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                position: { type: integer }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · previous work]
+      summary: Delete a company and its work rows
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/admin/experience-companies/{id}/works:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    post:
+      tags: [Admin · previous work]
+      summary: Add a work row to a company
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [description]
+              properties:
+                description: { type: string }
+                year: { type: integer, nullable: true, minimum: 1900, maximum: 2200 }
+                position: { type: integer }
+      responses:
+        '201': { description: Added }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/v1/admin/experience-companies/{id}/works/order:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    put:
+      tags: [Admin · previous work]
+      summary: Reorder one company's work rows
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Reorder' }
+      responses:
+        '200': { description: The rows in their new order }
+
+  /api/v1/admin/experience-works/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    patch:
+      tags: [Admin · previous work]
+      summary: Edit a work row
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description: { type: string }
+                year: { type: integer, nullable: true }
+                position: { type: integer }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · previous work]
+      summary: Delete a work row
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ---------------------------------------------------------- admin: jobs ----
+
+  /api/v1/admin/recruitments:
+    get:
+      tags: [Admin · jobs]
+      summary: List jobs, drafts included
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/LocaleOptional' }]
+      responses:
+        '200': { description: Jobs ordered by priority }
+    post:
+      tags: [Admin · jobs]
+      summary: Create a job
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [position, locale]
+              properties:
+                position: { type: string, description: The job title }
+                description: { type: string, nullable: true }
+                amount: { type: integer, nullable: true }
+                priority: { type: integer }
+                locale: { type: string, enum: [th, en] }
+                isPublished: { type: boolean, default: true }
+      responses:
+        '201': { description: Created }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/v1/admin/recruitments/order:
+    put:
+      tags: [Admin · jobs]
+      summary: Reorder one language's jobs
+      security: [{ bearerAuth: [] }]
+      parameters: [{ $ref: '#/components/parameters/Locale' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Reorder' }
+      responses:
+        '200': { description: The jobs in their new order }
+
+  /api/v1/admin/recruitments/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · jobs]
+      summary: One job
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The job }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · jobs]
+      summary: Edit a job
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                position: { type: string }
+                description: { type: string, nullable: true }
+                amount: { type: integer, nullable: true }
+                priority: { type: integer }
+                locale: { type: string, enum: [th, en] }
+                isPublished: { type: boolean }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · jobs]
+      summary: Delete a job
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ----------------------------------------------------- admin: documents ----
+
+  /api/v1/admin/documents:
+    get:
+      tags: [Admin · documents]
+      summary: List the logo and PDF entries
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: kind
+          in: query
+          schema: { type: string, enum: [pdf, logo] }
+        - $ref: '#/components/parameters/LocaleOptional'
+      responses:
+        '200': { description: Entries, drafts included }
+    post:
+      tags: [Admin · documents]
+      summary: Create an entry
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind, name]
+              properties:
+                kind: { type: string, enum: [pdf, logo] }
+                name: { type: string, description: The footer looks for the PDF named "Profile" }
+                description: { type: string, nullable: true }
+                locale: { type: string, enum: [th, en], nullable: true }
+                fileId: { type: integer, nullable: true }
+                position: { type: integer }
+                isPublished: { type: boolean, default: true }
+      responses:
+        '201': { description: Created }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /api/v1/admin/documents/{id}:
+    parameters: [{ $ref: '#/components/parameters/Id' }]
+    get:
+      tags: [Admin · documents]
+      summary: One entry
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: The entry }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Admin · documents]
+      summary: Edit an entry, or attach a different file
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                description: { type: string, nullable: true }
+                locale: { type: string, enum: [th, en], nullable: true }
+                fileId: { type: integer, nullable: true }
+                position: { type: integer }
+                isPublished: { type: boolean }
+      responses:
+        '200': { description: Updated }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Admin · documents]
+      summary: Delete an entry
+      description: The file itself stays in the media library.
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ----------------------------------------------------- admin: audit log ----
+
+  /api/v1/admin/audit-logs:
+    get:
+      tags: [Admin · audit log]
+      summary: Read the audit log
+      description: Read-only; there is no route that edits or deletes an entry.
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: userId
+          in: query
+          schema: { type: integer }
+        - name: username
+          in: query
+          schema: { type: string }
+        - name: actions
+          in: query
+          description: One action, or several separated by commas
+          schema: { type: string, example: LOGIN,LOGIN_FAILED }
+        - name: result
+          in: query
+          schema: { type: string, enum: [success, failure] }
+        - name: from
+          in: query
+          schema: { type: string, format: date-time }
+        - name: to
+          in: query
+          schema: { type: string, format: date-time }
+        - $ref: '#/components/parameters/Limit'
+        - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          description: Entries, newest first
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Envelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items: { $ref: '#/components/schemas/AuditLog' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }

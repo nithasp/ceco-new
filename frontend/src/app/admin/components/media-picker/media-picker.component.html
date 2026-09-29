@@ -1,0 +1,82 @@
+<div class="cms-field">
+  <label>{{ label }}</label>
+
+  <div class="cms-btn-row" style="align-items: flex-start">
+    <div class="cms-thumb">
+      <img *ngIf="previewUrl" [src]="previewUrl" [alt]="label" />
+      <span *ngIf="!previewUrl">No file</span>
+    </div>
+
+    <div class="cms-btn-row" style="flex-direction: column; align-items: stretch; gap: 6px">
+      <button
+        class="cms-btn cms-btn-secondary cms-btn-sm"
+        type="button"
+        (click)="toggle()"
+        [disabled]="disabled"
+      >
+        {{ open ? "Close library" : previewUrl ? "Change" : "Choose file" }}
+      </button>
+      <button
+        class="cms-btn cms-btn-danger cms-btn-sm"
+        type="button"
+        *ngIf="previewUrl"
+        (click)="clear()"
+        [disabled]="disabled"
+      >
+        Detach
+      </button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="open"
+    style="margin-top: 12px; border: 1px solid var(--cms-border); border-radius: 8px; padding: 12px"
+  >
+    <div class="cms-btn-row" style="margin-bottom: 12px">
+      <input
+        type="search"
+        placeholder="Search files…"
+        [(ngModel)]="search"
+        (keyup.enter)="load()"
+        style="flex: 1 1 180px"
+      />
+      <button class="cms-btn cms-btn-secondary cms-btn-sm" type="button" (click)="load()">Search</button>
+
+      <label class="cms-btn cms-btn-sm" style="margin: 0">
+        {{ uploading ? "Uploading…" : "Upload new" }}
+        <input
+          type="file"
+          [accept]="accept"
+          (change)="onFileSelected($event)"
+          [disabled]="uploading"
+          hidden
+        />
+      </label>
+    </div>
+
+    <div class="cms-loading" *ngIf="loading">Loading files…</div>
+    <div class="cms-empty" *ngIf="!loading && !files.length">
+      No files yet. Use the upload button to add one.
+    </div>
+
+    <div class="cms-media-grid" *ngIf="!loading && files.length">
+      <button
+        class="cms-media-tile"
+        type="button"
+        *ngFor="let file of files"
+        [ngClass]="{ selected: file.id === mediaId }"
+        (click)="choose(file)"
+      >
+        <div class="cms-media-preview">
+          <img *ngIf="isImage(file)" [src]="file.url" [alt]="file.alternativeText || file.name" />
+          <span class="cms-file-ext" *ngIf="!isImage(file)">{{ extLabel(file) }}</span>
+        </div>
+        <div class="cms-media-meta">
+          <strong [title]="file.name">{{ file.name }}</strong>
+          <span *ngIf="file.width">{{ file.width }}&times;{{ file.height }}</span>
+          <span *ngIf="!file.width">{{ extLabel(file) }}</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

@@ -8,12 +8,12 @@
       </div>
     </div>
     <div class="tbody">
-      <ng-container *ngIf="companies">
-        <div class="work" *ngFor="let company of companies.attributes.company">
+      <ng-container *ngIf="experience && experience.companies.length">
+        <div class="work" *ngFor="let company of experience.companies">
           <div class="row">
             <div class="title col-3">{{ company.name }}</div>
             <div class="content col-9">
-              <div class="row prev-work" *ngFor="let work of company.work">
+              <div class="row prev-work" *ngFor="let work of company.works">
                 <div class="description col-9">
                   <span class="arrow-icon">›</span>
                   {{ work.description }}
@@ -26,7 +26,7 @@
           </div>
         </div>
       </ng-container>
-      <ng-container *ngIf="!companies">
+      <ng-container *ngIf="!experience || !experience.companies.length">
         <div class="work no-work">
           <div class="col-12"><h1>-</h1></div>
         </div>

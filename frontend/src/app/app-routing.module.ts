@@ -14,10 +14,16 @@ const routes: Routes = [
   { path: 'commissioning', component: CommissioningComponent },
   { path: 'design', component: DesignComponent },
   { path: 'maintenance', component: MaintenanceComponent },
+  // The CMS is loaded only when someone actually opens it, so it costs the public site nothing
+  {
+    path: 'admin',
+    loadChildren: () => import('./admin/admin.module').then((m) => m.AdminModule),
+  },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled'})],
+  imports: [RouterModule.forRoot(routes, { anchorScrolling: 'enabled' })],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

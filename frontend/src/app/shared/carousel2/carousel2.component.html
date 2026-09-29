@@ -9,10 +9,10 @@
   class="mySwiper"
 >
   <ng-template swiperSlide *ngFor="let slide of recentProjectSlides">
-    <img src="{{ url + slide.attributes.Image.data.attributes.url }}" />
+    <img *ngIf="slide.imageUrl" [src]="slide.imageUrl" [alt]="slide.imageAlt || slide.name" />
     <div class="content">
-      <h1>{{ slide.attributes.Name }}</h1>
-      <p>{{ slide.attributes.Description }}</p>
+      <h1>{{ slide.name }}</h1>
+      <p>{{ slide.description }}</p>
     </div>
   </ng-template>
 </swiper>
