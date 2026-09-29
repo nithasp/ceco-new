@@ -1,3 +1,4 @@
+import type { Connection as CoreConnection } from 'mysql2';
 import mysql, { Pool, PoolConnection, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { config } from './config';
 import { logger } from './logger';
@@ -40,14 +41,20 @@ const pool: Pool = url
       ...shared,
     });
 
-// The driver writes and reads every DATETIME as UTC (timezone: 'Z' above). A server session left
-// on its own local time would convert those values again on the way in, shifting every timestamp,
-// so each new connection is pinned to UTC as well. Promise.resolve covers both driver APIs, and a
-// failure is logged rather than left as an unhandled rejection.
+// Every timestamp column is a TIMESTAMP, which MySQL converts between the session time zone and
+// UTC on the way in and out. The driver already writes and reads them as UTC (timezone: 'Z'
+// above), so a session left on the server's own zone shifts every value by that offset and a
+// refresh token expires at the wrong moment.
+//
+// mysql2/promise forwards this event straight from the core pool without wrapping it
+// (lib/promise/inherit_events.js), so the connection here is the callback-API one whatever the
+// promise typings claim. Its query() returns a Query whose .then() throws by design, so passing a
+// callback is the only form that runs: awaiting it, or handing it to Promise.resolve, assimilates
+// the thenable, trips that guard, and the statement is silently never sent.
 pool.on('connection', (connection) => {
-  Promise.resolve(connection.query("SET time_zone = '+00:00'")).catch((err: unknown) =>
-    logger.error({ err }, 'could not pin the session time zone to UTC'),
-  );
+  (connection as unknown as CoreConnection).query("SET time_zone = '+00:00'", (err) => {
+    if (err) logger.error({ err }, 'could not pin the session time zone to UTC');
+  });
 });
 
 // Values go through the driver's escaping rather than being pasted into the string, so a quote in
