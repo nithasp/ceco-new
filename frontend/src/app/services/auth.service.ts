@@ -1,9 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { catchError, map, shareReplay, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { ApiResponse, AuthSession, AuthUser } from '../interfaces';
+
+// Records the API's last answer about whether a session exists, so opening the CMS while signed
+// out does not wait on a refresh call that can only fail. A hint and not a credential: the API
+// still decides, and the worst a wrong one costs is the round trip it was meant to save.
+const SESSION_HINT_KEY = 'ceco.cms.session';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -19,6 +24,8 @@ export class AuthService {
 
   // Several guards can fire at once on a deep link; they share one refresh call rather than racing
   private refreshInFlight: Observable<boolean> | null = null;
+
+  private storageUsable = true;
 
   constructor(private http: HttpClient) {}
 
@@ -52,7 +59,10 @@ export class AuthService {
     return this.http.post<ApiResponse<null>>(`${this.base}/logout`, {}, { withCredentials: true }).pipe(
       // A failed call still ends the session on this device; the cookie is gone either way
       catchError(() => of(null)),
-      tap(() => this.clear()),
+      tap(() => {
+        this.clear();
+        this.rememberSession(false);
+      }),
       map(() => undefined),
     );
   }
@@ -67,8 +77,14 @@ export class AuthService {
       .pipe(
         tap((res) => this.apply(res.data)),
         map(() => true),
-        catchError(() => {
+        catchError((error: unknown) => {
           this.clear();
+          // Only the API turning the cookie down proves the session is gone. A network failure or a
+          // 5xx says nothing, and forgetting on one would send an editor back to the login page
+          // over a blip they could have ridden out.
+          if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
+            this.rememberSession(false);
+          }
           return of(false);
         }),
         tap(() => (this.refreshInFlight = null)),
@@ -80,7 +96,9 @@ export class AuthService {
 
   // What the guard calls: already signed in, or able to become so from the cookie
   ensureSession(): Observable<boolean> {
-    return this.isLoggedIn ? of(true) : this.refresh();
+    if (this.isLoggedIn) return of(true);
+    if (!this.mightHaveSession()) return of(false);
+    return this.refresh();
   }
 
   changePassword(currentPassword: string, newPassword: string): Observable<AuthUser> {
@@ -101,6 +119,28 @@ export class AuthService {
   private apply(session: AuthSession): void {
     this.accessToken = session.accessToken;
     this.userSubject.next(session.user);
+    this.rememberSession(true);
+  }
+
+  // Missing until the API has answered once, so a browser that already holds a live session is
+  // never signed out just to save the call that would have restored it
+  private mightHaveSession(): boolean {
+    if (!this.storageUsable) return true;
+
+    try {
+      return localStorage.getItem(SESSION_HINT_KEY) !== '0';
+    } catch {
+      this.storageUsable = false;
+      return true;
+    }
+  }
+
+  private rememberSession(signedIn: boolean): void {
+    try {
+      localStorage.setItem(SESSION_HINT_KEY, signedIn ? '1' : '0');
+    } catch {
+      this.storageUsable = false;
+    }
   }
 
   private clear(): void {

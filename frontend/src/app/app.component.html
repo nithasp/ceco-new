@@ -1,3 +1,15 @@
 <app-header *ngIf="!isAdminArea"></app-header>
 <router-outlet></router-outlet>
 <app-footer *ngIf="!isAdminArea"></app-footer>
+
+<div
+  class="admin-splash"
+  *ngIf="showAdminSplash"
+  role="status"
+  aria-label="Opening the content manager"
+>
+  <div class="admin-splash-body">
+    <span class="admin-splash-spinner" aria-hidden="true"></span>
+    <p>Opening CECO CMS…</p>
+  </div>
+</div>

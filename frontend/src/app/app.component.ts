@@ -1,7 +1,13 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+} from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,25 +20,56 @@ export class AppComponent implements OnInit, OnDestroy {
   // The CMS has its own shell, so the public navbar and footer are left out under /admin
   isAdminArea = false;
 
+  showAdminSplash = false;
+
+  private committedIsAdmin = false;
+  private pendingIsAdmin = false;
+  private renderedUrl: string | null = null;
+
   private readonly subscriptions = new Subscription();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private location: Location,
+  ) {}
 
   ngOnInit(): void {
-    // Set from the current URL as well, so a deep link into /admin is right on the first paint
-    this.isAdminArea = this.isAdminUrl(this.router.url);
+    // Read from the address bar, not from Router.url: the initial navigation has not run yet at
+    // this point, so the router still reports '/' and a deep link into /admin would paint the
+    // public header and footer for as long as the guard takes.
+    this.committedIsAdmin = this.isAdminUrl(this.location.path());
+    this.pendingIsAdmin = this.committedIsAdmin;
+    this.sync();
 
     this.subscriptions.add(
-      this.router.events
-        .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
-        .subscribe((event) => {
-          this.isAdminArea = this.isAdminUrl(event.urlAfterRedirects);
-        }),
+      this.router.events.subscribe((event) => {
+        if (event instanceof NavigationStart) {
+          this.pendingIsAdmin = this.isAdminUrl(event.url);
+        } else if (event instanceof NavigationEnd) {
+          this.renderedUrl = event.urlAfterRedirects;
+          this.committedIsAdmin = this.isAdminUrl(event.urlAfterRedirects);
+          this.pendingIsAdmin = false;
+        } else if (event instanceof NavigationCancel || event instanceof NavigationError) {
+          this.pendingIsAdmin = false;
+        } else {
+          return;
+        }
+
+        this.sync();
+      }),
     );
   }
 
+  private sync(): void {
+    this.isAdminArea = this.committedIsAdmin || this.pendingIsAdmin;
+
+    const cmsOnScreen = this.renderedUrl !== null && this.isAdminUrl(this.renderedUrl);
+    this.showAdminSplash = this.pendingIsAdmin && !cmsOnScreen;
+  }
+
   private isAdminUrl(url: string): boolean {
-    return url === '/admin' || url.startsWith('/admin/') || url.startsWith('/admin?');
+    const path = url.split(/[?#]/)[0];
+    return path === '/admin' || path.startsWith('/admin/');
   }
 
   ngOnDestroy(): void {
