@@ -5,10 +5,6 @@ pages write through.
 
 Node.js · Express 5 · MySQL 8 · JWT · Cloudflare R2
 
-It replaces the Strapi instance the site used to call at `api.beonit.xyz/strapi`, which is gone. The
-response shape is plain REST rather than Strapi's `data[].attributes` envelope, and the frontend was
-updated to match.
-
 ---
 
 ## Quick start
