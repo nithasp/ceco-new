@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import {
   ApiResponse,
   DocumentKind,
+  DocumentPayload,
   Experience,
   ExperienceCompany,
   ExperienceType,
@@ -13,53 +14,15 @@ import {
   HeaderSlide,
   Locale,
   Media,
-  PageMeta,
+  Paged,
   RecentProject,
+  RecentProjectPayload,
   Recruitment,
+  RecruitmentPayload,
   SiteDocument,
   SiteHeader,
+  SlidePayload,
 } from 'src/app/interfaces';
-
-export interface Paged<T> {
-  items: T[];
-  meta?: PageMeta;
-}
-
-export interface SlidePayload {
-  title?: string;
-  description?: string | null;
-  imageId?: number | null;
-  position?: number;
-  isPublished?: boolean;
-}
-
-export interface RecentProjectPayload {
-  name?: string;
-  description?: string | null;
-  locale?: Locale;
-  imageId?: number | null;
-  position?: number;
-  isPublished?: boolean;
-}
-
-export interface RecruitmentPayload {
-  position?: string;
-  description?: string | null;
-  amount?: number | null;
-  priority?: number;
-  locale?: Locale;
-  isPublished?: boolean;
-}
-
-export interface DocumentPayload {
-  kind?: DocumentKind;
-  name?: string;
-  description?: string | null;
-  locale?: Locale | null;
-  fileId?: number | null;
-  position?: number;
-  isPublished?: boolean;
-}
 
 // Every admin call goes through here, so the bearer token and the URL shape live in one place.
 // The interceptor attaches the token and renews it when it has expired.

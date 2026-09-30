@@ -13,6 +13,7 @@ import {
 import { Locale } from '../types/common.types';
 import { EXPERIENCE_TYPES } from '../types/experience.types';
 import { Media } from '../types/media.types';
+import { SlideSeed } from '../types/seed.types';
 
 // The old CMS is gone, so the site's own assets and translation files are the source. Anything that
 // existed only in the old database is seeded as a clearly-labelled example for the editor to replace.
@@ -37,12 +38,6 @@ const EXAMPLE_LABEL: Record<Locale, string> = {
   th: 'ตัวอย่าง — แก้ไขได้ในหน้าผู้ดูแลระบบ',
   en: 'Example — edit this in the admin pages',
 };
-
-interface SlideSeed {
-  file: string;
-  title: Record<Locale, string>;
-  description: Record<Locale, string>;
-}
 
 const HERO_SLIDES: SlideSeed[] = [
   {

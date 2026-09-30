@@ -1,15 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Locale, Recruitment } from 'src/app/interfaces';
+import { JobDraft, Locale, Recruitment } from 'src/app/interfaces';
 import { AdminApiService } from '../../services/admin-api.service';
 import { describeError } from '../../services/api-error';
 import { NotifyService } from '../../services/notify.service';
-
-interface JobDraft {
-  position: string;
-  description: string;
-  amount: number | null;
-  isPublished: boolean;
-}
 
 const emptyJob = (): JobDraft => ({ position: '', description: '', amount: null, isPublished: true });
 

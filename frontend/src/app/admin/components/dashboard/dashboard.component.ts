@@ -1,23 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Media } from 'src/app/interfaces';
-import { AdminApiService, Paged } from '../../services/admin-api.service';
+import { Media, Paged, Tally } from 'src/app/interfaces';
+import { AdminApiService } from '../../services/admin-api.service';
 import { describeError } from '../../services/api-error';
 import { NotifyService } from '../../services/notify.service';
-
-interface Tally {
-  slidesTh: number;
-  slidesEn: number;
-  projectsTh: number;
-  projectsEn: number;
-  jobsTh: number;
-  jobsEn: number;
-  workTables: number;
-  files: number;
-  hasLogo: boolean;
-  hasProfilePdf: boolean;
-}
 
 @Component({
   selector: 'app-admin-dashboard',

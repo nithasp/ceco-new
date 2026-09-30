@@ -20,3 +20,13 @@ export interface SiteDocument {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface DocumentPayload {
+  kind?: DocumentKind;
+  name?: string;
+  description?: string | null;
+  locale?: Locale | null;
+  fileId?: number | null;
+  position?: number;
+  isPublished?: boolean;
+}

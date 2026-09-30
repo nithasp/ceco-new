@@ -1,25 +1,17 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { forkJoin } from 'rxjs';
-import { HeaderSlide, Locale, Media, RecentProject, SiteHeader } from 'src/app/interfaces';
+import {
+  HeaderSlide,
+  Locale,
+  Media,
+  ProjectDraft,
+  RecentProject,
+  SiteHeader,
+  SlideDraft,
+} from 'src/app/interfaces';
 import { AdminApiService } from '../../services/admin-api.service';
 import { describeError } from '../../services/api-error';
 import { NotifyService } from '../../services/notify.service';
-
-interface SlideDraft {
-  title: string;
-  description: string;
-  imageId: number | null;
-  previewUrl: string | null;
-  isPublished: boolean;
-}
-
-interface ProjectDraft {
-  name: string;
-  description: string;
-  imageId: number | null;
-  previewUrl: string | null;
-  isPublished: boolean;
-}
 
 const emptySlide = (): SlideDraft => ({
   title: '',

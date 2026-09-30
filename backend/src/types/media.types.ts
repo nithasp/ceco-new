@@ -61,3 +61,11 @@ export interface UploadedFile {
   mime: string;
   size: number;
 }
+
+// What the CMS may send alongside an upload. Everything is optional: a file uploaded with no
+// metadata takes its name from the original filename.
+export interface UploadMeta {
+  alternativeText?: string | null | undefined;
+  caption?: string | null | undefined;
+  name?: string | undefined;
+}

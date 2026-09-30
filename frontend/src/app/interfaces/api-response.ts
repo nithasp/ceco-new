@@ -19,3 +19,9 @@ export interface ApiError {
   data: null;
   code: string;
 }
+
+// A list call reshaped for the CMS: the rows, and the paging meta when the endpoint sent one
+export interface Paged<T> {
+  items: T[];
+  meta?: PageMeta;
+}

@@ -28,3 +28,9 @@ export interface Experience {
   createdAt: string;
   updatedAt: string;
 }
+
+// The row being typed under a company in the CMS, before it is added
+export interface WorkDraft {
+  description: string;
+  year: number | null;
+}

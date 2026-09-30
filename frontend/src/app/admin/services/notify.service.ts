@@ -1,13 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-export type ToastKind = 'info' | 'success' | 'error';
-
-export interface Toast {
-  id: number;
-  kind: ToastKind;
-  message: string;
-}
+import { Toast, ToastKind } from 'src/app/interfaces';
 
 const AUTO_DISMISS_MS = 4500;
 

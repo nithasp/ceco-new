@@ -1,7 +1,7 @@
 import { imageSize } from 'image-size';
 import { config } from '../config';
 import { logger } from '../logger';
-import { Media, MediaFilters, MediaUpdate, UploadedFile } from '../types/media.types';
+import { Media, MediaFilters, MediaUpdate, UploadMeta, UploadedFile } from '../types/media.types';
 import { Page, Pagination } from '../types/pagination.types';
 import { MediaServiceDeps } from '../types/service.types';
 import { AppError } from '../utils/errors';
@@ -10,12 +10,6 @@ import { baseName, objectKeyFor } from '../utils/objectKey';
 import { pageOf } from '../utils/paging';
 
 const notFound = (id: number) => new AppError(`file with id ${id} not found`, 404, 'not_found');
-
-interface UploadMeta {
-  alternativeText?: string | null | undefined;
-  caption?: string | null | undefined;
-  name?: string | undefined;
-}
 
 function measure(buffer: Buffer, mime: string): { width: number | null; height: number | null } {
   if (!hasPixelSize(mime)) return { width: null, height: null };

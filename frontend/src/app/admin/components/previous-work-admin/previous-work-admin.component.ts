@@ -6,6 +6,7 @@ import {
   ExperienceType,
   ExperienceWork,
   Locale,
+  WorkDraft,
 } from 'src/app/interfaces';
 import { AdminApiService } from '../../services/admin-api.service';
 import { describeError } from '../../services/api-error';
@@ -18,11 +19,6 @@ const TYPE_LABELS: Record<ExperienceType, string> = {
   commission: 'Testing & Commissioning',
   maintenance: 'Maintenance',
 };
-
-interface WorkDraft {
-  description: string;
-  year: number | null;
-}
 
 // Edits the "previous work" table each service page shows: a list of companies, and under each one
 // the jobs done for it with the year. One table per service page per language.

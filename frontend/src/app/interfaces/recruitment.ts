@@ -12,3 +12,20 @@ export interface Recruitment {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface RecruitmentPayload {
+  position?: string;
+  description?: string | null;
+  amount?: number | null;
+  priority?: number;
+  locale?: Locale;
+  isPublished?: boolean;
+}
+
+// The "new job" form before it is saved
+export interface JobDraft {
+  position: string;
+  description: string;
+  amount: number | null;
+  isPublished: boolean;
+}

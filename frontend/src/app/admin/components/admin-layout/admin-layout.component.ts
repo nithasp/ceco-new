@@ -1,9 +1,9 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthUser } from 'src/app/interfaces';
+import { AuthUser, Toast } from 'src/app/interfaces';
 import { AuthService } from 'src/app/services/auth.service';
-import { NotifyService, Toast } from '../../services/notify.service';
+import { NotifyService } from '../../services/notify.service';
 
 @Component({
   selector: 'app-admin-layout',

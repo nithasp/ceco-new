@@ -14,3 +14,21 @@ export interface RecentProject {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface RecentProjectPayload {
+  name?: string;
+  description?: string | null;
+  locale?: Locale;
+  imageId?: number | null;
+  position?: number;
+  isPublished?: boolean;
+}
+
+// The "new project" form before it is saved; `previewUrl` is for the form thumbnail only
+export interface ProjectDraft {
+  name: string;
+  description: string;
+  imageId: number | null;
+  previewUrl: string | null;
+  isPublished: boolean;
+}
