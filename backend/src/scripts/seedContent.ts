@@ -17,6 +17,11 @@ import { Media } from '../types/media.types';
 // The old CMS is gone, so the site's own assets and translation files are the source. Anything that
 // existed only in the old database is seeded as a clearly-labelled example for the editor to replace.
 const ASSETS = path.resolve(process.cwd(), '..', 'frontend', 'assets', 'images');
+const DOCUMENTS = path.resolve(process.cwd(), '..', 'frontend', 'assets', 'documents');
+
+// Optional: a PDF sitting here is attached to the company profile row. Without it the row is still
+// created, empty, for the editor to fill in from /admin/documents.
+const PROFILE_PDF = 'company-profile.pdf';
 
 const MIME_BY_EXT: Record<string, string> = {
   '.webp': 'image/webp',
@@ -128,29 +133,214 @@ const RECENT_PROJECTS: SlideSeed[] = [
   },
 ];
 
-const JOBS: { position: Record<Locale, string>; amount: number; description: Record<Locale, string> }[] = [
+const JOBS: {
+  position: Record<Locale, string>;
+  amount: number;
+  description: Record<Locale, string>;
+}[] = [
   {
-    position: { th: 'วิศวกรไฟฟ้า (Electrical Engineer)', en: 'Electrical Engineer' },
+    position: {
+      th: 'วิศวกรไฟฟ้า (Electrical Engineer)',
+      en: 'Electrical Engineer',
+    },
     amount: 2,
     description: {
-      th: '<p>คุณสมบัติ</p><ul><li>ปริญญาตรี สาขาวิศวกรรมไฟฟ้า</li><li>มีใบอนุญาตประกอบวิชาชีพวิศวกรรม (กว.) จะพิจารณาเป็นพิเศษ</li><li>สามารถเดินทางไปปฏิบัติงานต่างจังหวัดได้</li></ul>',
-      en: '<p>Requirements</p><ul><li>Bachelor degree in Electrical Engineering</li><li>A professional engineering licence is an advantage</li><li>Able to travel to site work</li></ul>',
+      th: `
+        <p><strong>หน้าที่ความรับผิดชอบ</strong></p>
+        <ul>
+          <li>ออกแบบ ตรวจสอบ และควบคุมงานระบบไฟฟ้าของโครงการให้เป็นไปตามแบบ มาตรฐานทางวิศวกรรม และข้อกำหนดของโครงการ</li>
+          <li>วางแผนและควบคุมการติดตั้งระบบไฟฟ้า รวมถึงระบบไฟฟ้ากำลัง ระบบควบคุม และอุปกรณ์ไฟฟ้าที่เกี่ยวข้อง</li>
+          <li>ตรวจสอบแบบก่อสร้าง (Shop Drawing) วัสดุ และวิธีการติดตั้งให้ถูกต้องตามหลักวิศวกรรม</li>
+          <li>ประสานงานกับผู้รับเหมา ทีมวิศวกร ผู้ควบคุมงาน และหน่วยงานที่เกี่ยวข้องเพื่อแก้ไขปัญหาหน้างาน</li>
+          <li>ตรวจสอบคุณภาพงานและติดตามความคืบหน้าให้เป็นไปตามแผนงานและระยะเวลาที่กำหนด</li>
+          <li>จัดทำและตรวจสอบเอกสารทางวิศวกรรม เช่น รายงานความคืบหน้า รายงานการตรวจสอบ และเอกสารส่งมอบงาน</li>
+          <li>วิเคราะห์ปัญหาระบบไฟฟ้าและเสนอแนวทางแก้ไขที่เหมาะสมและปลอดภัย</li>
+          <li>ควบคุมการปฏิบัติงานให้เป็นไปตามมาตรฐานด้านความปลอดภัยและข้อกำหนดของโครงการ</li>
+          <li>สามารถเดินทางไปปฏิบัติงานตามพื้นที่โครงการหรือต่างจังหวัดได้</li>
+        </ul>
+
+        <p><strong>คุณสมบัติ</strong></p>
+        <ul>
+          <li>ปริญญาตรี สาขาวิศวกรรมไฟฟ้า หรือสาขาที่เกี่ยวข้อง</li>
+          <li>มีใบอนุญาตประกอบวิชาชีพวิศวกรรมควบคุม (กว.) จะพิจารณาเป็นพิเศษ</li>
+          <li>มีประสบการณ์ด้านงานระบบไฟฟ้า งานก่อสร้าง หรืองานโครงการ จะได้รับการพิจารณาเป็นพิเศษ</li>
+          <li>มีความรู้เกี่ยวกับระบบไฟฟ้ากำลัง ระบบไฟฟ้าอาคาร และมาตรฐานทางวิศวกรรมที่เกี่ยวข้อง</li>
+          <li>สามารถอ่านและทำความเข้าใจแบบทางวิศวกรรมและแบบไฟฟ้าได้</li>
+          <li>มีทักษะในการวิเคราะห์และแก้ไขปัญหาหน้างาน</li>
+          <li>สามารถใช้ Microsoft Office ได้ดี และหากสามารถใช้ AutoCAD หรือโปรแกรมทางวิศวกรรมอื่น ๆ ได้จะพิจารณาเป็นพิเศษ</li>
+          <li>มีความรับผิดชอบสูง สามารถทำงานภายใต้แรงกดดันและบริหารงานให้เป็นไปตามกำหนดเวลาได้</li>
+          <li>สามารถทำงานเป็นทีมและประสานงานกับหลายฝ่ายได้เป็นอย่างดี</li>
+          <li>สามารถเดินทางไปปฏิบัติงานต่างจังหวัดได้</li>
+        </ul>
+      `,
+      en: `
+        <p><strong>Responsibilities</strong></p>
+        <ul>
+          <li>Design, review, and supervise electrical system work in accordance with engineering standards, project specifications, and approved drawings.</li>
+          <li>Plan and control the installation of electrical systems, including power systems, control systems, and related electrical equipment.</li>
+          <li>Review construction drawings, shop drawings, materials, and installation methods to ensure compliance with engineering requirements.</li>
+          <li>Coordinate with contractors, engineers, supervisors, and relevant departments to resolve technical and site-related issues.</li>
+          <li>Inspect work quality and monitor project progress to ensure compliance with project schedules and requirements.</li>
+          <li>Prepare and review engineering documents, including progress reports, inspection reports, and project handover documents.</li>
+          <li>Analyze electrical system problems and propose appropriate and safe solutions.</li>
+          <li>Ensure that electrical work complies with applicable safety standards and project requirements.</li>
+          <li>Travel to project sites and work in other provinces as required.</li>
+        </ul>
+
+        <p><strong>Requirements</strong></p>
+        <ul>
+          <li>Bachelor's degree in Electrical Engineering or a related field.</li>
+          <li>A Professional Engineering License (กว.) is an advantage.</li>
+          <li>Experience in electrical systems, construction, or engineering projects is an advantage.</li>
+          <li>Good knowledge of electrical power systems, building electrical systems, and relevant engineering standards.</li>
+          <li>Ability to read and understand electrical and engineering drawings.</li>
+          <li>Strong analytical and problem-solving skills.</li>
+          <li>Good working knowledge of Microsoft Office. Experience with AutoCAD or other engineering software is an advantage.</li>
+          <li>Strong sense of responsibility and ability to work under pressure and meet deadlines.</li>
+          <li>Good communication, coordination, and teamwork skills.</li>
+          <li>Willing and able to travel to project sites in other provinces.</li>
+        </ul>
+      `,
     },
   },
+
   {
-    position: { th: 'ช่างเทคนิคไฟฟ้า (Electrical Technician)', en: 'Electrical Technician' },
+    position: {
+      th: 'ช่างเทคนิคไฟฟ้า (Electrical Technician)',
+      en: 'Electrical Technician',
+    },
     amount: 3,
     description: {
-      th: '<p>คุณสมบัติ</p><ul><li>ปวส. สาขาไฟฟ้ากำลัง หรือสาขาที่เกี่ยวข้อง</li><li>มีประสบการณ์งานระบบไฟฟ้าแรงดันสูงจะพิจารณาเป็นพิเศษ</li><li>สามารถทำงานเป็นทีมได้</li></ul>',
-      en: '<p>Requirements</p><ul><li>Vocational diploma in Electrical Power or a related field</li><li>Experience with high voltage systems is an advantage</li><li>Able to work as part of a team</li></ul>',
+      th: `
+        <p><strong>หน้าที่ความรับผิดชอบ</strong></p>
+        <ul>
+          <li>ติดตั้ง ตรวจสอบ บำรุงรักษา และซ่อมแซมระบบไฟฟ้าและอุปกรณ์ไฟฟ้าภายในโครงการ</li>
+          <li>ปฏิบัติงานเกี่ยวกับระบบไฟฟ้ากำลัง ตู้ควบคุม สายไฟ อุปกรณ์ป้องกัน และอุปกรณ์ไฟฟ้าที่เกี่ยวข้อง</li>
+          <li>ตรวจสอบสภาพอุปกรณ์และระบบไฟฟ้าให้อยู่ในสภาพพร้อมใช้งานและปลอดภัย</li>
+          <li>แก้ไขปัญหาเบื้องต้นของระบบไฟฟ้าเมื่อเกิดความผิดปกติหรือขัดข้อง</li>
+          <li>ช่วยเหลือทีมวิศวกรในการติดตั้ง ตรวจสอบ และทดสอบระบบไฟฟ้าตามแบบและข้อกำหนดของโครงการ</li>
+          <li>บันทึกผลการตรวจสอบ การบำรุงรักษา และปัญหาที่พบในการปฏิบัติงาน</li>
+          <li>ดูแลเครื่องมือและอุปกรณ์ที่ใช้ในการทำงานให้อยู่ในสภาพพร้อมใช้งาน</li>
+          <li>ปฏิบัติงานตามขั้นตอนด้านความปลอดภัย โดยเฉพาะงานที่เกี่ยวข้องกับระบบไฟฟ้าแรงดันสูง</li>
+          <li>ประสานงานกับทีมช่าง วิศวกร และผู้เกี่ยวข้องเพื่อให้งานแล้วเสร็จตามแผน</li>
+          <li>สามารถเดินทางไปปฏิบัติงานตามพื้นที่โครงการหรือต่างจังหวัดได้</li>
+        </ul>
+
+        <p><strong>คุณสมบัติ</strong></p>
+        <ul>
+          <li>ปวส. สาขาไฟฟ้ากำลัง ไฟฟ้าอุตสาหกรรม หรือสาขาที่เกี่ยวข้อง</li>
+          <li>มีประสบการณ์ด้านงานติดตั้งระบบไฟฟ้า งานซ่อมบำรุง หรือสายงานที่เกี่ยวข้องจะพิจารณาเป็นพิเศษ</li>
+          <li>มีประสบการณ์เกี่ยวกับระบบไฟฟ้าแรงดันสูงจะพิจารณาเป็นพิเศษ</li>
+          <li>มีความรู้พื้นฐานด้านระบบไฟฟ้า การอ่านวงจรไฟฟ้า และการใช้เครื่องมือวัดทางไฟฟ้า</li>
+          <li>สามารถใช้เครื่องมือช่างและอุปกรณ์ตรวจวัดทางไฟฟ้าได้อย่างถูกต้องและปลอดภัย</li>
+          <li>มีความรับผิดชอบ ขยัน อดทน และสามารถปฏิบัติงานตามเวลาที่กำหนดได้</li>
+          <li>สามารถทำงานเป็นทีมและประสานงานกับเพื่อนร่วมงานได้ดี</li>
+          <li>มีความตระหนักด้านความปลอดภัยและปฏิบัติตามกฎระเบียบอย่างเคร่งครัด</li>
+          <li>หากมีใบรับรองหรือผ่านการอบรมด้านความปลอดภัยทางไฟฟ้าจะพิจารณาเป็นพิเศษ</li>
+          <li>สามารถเดินทางไปปฏิบัติงานต่างจังหวัดได้</li>
+        </ul>
+      `,
+      en: `
+        <p><strong>Responsibilities</strong></p>
+        <ul>
+          <li>Install, inspect, maintain, and repair electrical systems and equipment at project sites.</li>
+          <li>Work with electrical power systems, control panels, wiring, protection devices, and related electrical equipment.</li>
+          <li>Inspect electrical equipment and systems to ensure they are in good working condition and meet safety requirements.</li>
+          <li>Troubleshoot and perform basic repairs when electrical system faults or abnormalities occur.</li>
+          <li>Support engineers with the installation, inspection, and testing of electrical systems according to approved drawings and project requirements.</li>
+          <li>Record inspection results, maintenance activities, and problems identified during operations.</li>
+          <li>Maintain tools, testing equipment, and other work equipment in good working condition.</li>
+          <li>Follow electrical safety procedures, particularly when working with high-voltage systems.</li>
+          <li>Coordinate with technicians, engineers, contractors, and other team members to complete work according to project schedules.</li>
+          <li>Travel to project sites and work in other provinces as assigned.</li>
+        </ul>
+
+        <p><strong>Requirements</strong></p>
+        <ul>
+          <li>Vocational Diploma (ปวส.) in Electrical Power, Industrial Electrical Engineering, or a related field.</li>
+          <li>Experience in electrical installation, maintenance, or related work is an advantage.</li>
+          <li>Experience with high-voltage electrical systems is an advantage.</li>
+          <li>Basic knowledge of electrical systems, circuit diagrams, and electrical measurement instruments.</li>
+          <li>Ability to use electrical tools and testing equipment correctly and safely.</li>
+          <li>Responsible, hardworking, reliable, and able to work according to assigned schedules.</li>
+          <li>Ability to work effectively as part of a team.</li>
+          <li>Strong awareness of workplace safety and ability to follow electrical safety procedures.</li>
+          <li>Electrical safety training or relevant technical certifications are an advantage.</li>
+          <li>Willing and able to travel to project sites in other provinces.</li>
+        </ul>
+      `,
     },
   },
+
   {
-    position: { th: 'เจ้าหน้าที่ธุรการโครงการ', en: 'Project Administrator' },
+    position: {
+      th: 'เจ้าหน้าที่ธุรการโครงการ',
+      en: 'Project Administrator',
+    },
     amount: 1,
     description: {
-      th: '<p>คุณสมบัติ</p><ul><li>ปริญญาตรี ทุกสาขา</li><li>ใช้งาน Microsoft Office ได้ดี</li><li>มีความละเอียดรอบคอบในการจัดทำเอกสาร</li></ul>',
-      en: '<p>Requirements</p><ul><li>Bachelor degree in any field</li><li>Good working knowledge of Microsoft Office</li><li>Careful and accurate with documentation</li></ul>',
+      th: `
+        <p><strong>หน้าที่ความรับผิดชอบ</strong></p>
+        <ul>
+          <li>จัดทำ จัดเก็บ และดูแลเอกสารต่าง ๆ ที่เกี่ยวข้องกับโครงการให้เป็นระบบ</li>
+          <li>จัดทำหนังสือ รายงาน แบบฟอร์ม และเอกสารสำหรับการประสานงานภายในและภายนอกองค์กร</li>
+          <li>บันทึกข้อมูลและจัดทำรายงานความคืบหน้าของโครงการตามที่ได้รับมอบหมาย</li>
+          <li>ดูแลระบบจัดเก็บเอกสารทั้งในรูปแบบเอกสารและไฟล์อิเล็กทรอนิกส์</li>
+          <li>ประสานงานระหว่างทีมโครงการ ผู้รับเหมา ลูกค้า และหน่วยงานที่เกี่ยวข้อง</li>
+          <li>จัดเตรียมเอกสารสำหรับการประชุม รวมถึงจัดทำรายงานการประชุมและติดตามงานที่เกี่ยวข้อง</li>
+          <li>ตรวจสอบความครบถ้วนและความถูกต้องของเอกสารก่อนนำเสนอหรือส่งให้หน่วยงานที่เกี่ยวข้อง</li>
+          <li>ดูแลตารางนัดหมาย การประชุม และงานธุรการทั่วไปของทีมโครงการ</li>
+          <li>จัดทำและดูแลเอกสารค่าใช้จ่ายหรือเอกสารสนับสนุนโครงการตามที่ได้รับมอบหมาย</li>
+          <li>สนับสนุนงานของผู้จัดการโครงการและทีมงานในด้านเอกสารและการประสานงาน</li>
+          <li>ปฏิบัติงานอื่น ๆ ตามที่ได้รับมอบหมาย</li>
+        </ul>
+
+        <p><strong>คุณสมบัติ</strong></p>
+        <ul>
+          <li>ปริญญาตรี ทุกสาขา</li>
+          <li>มีประสบการณ์ด้านงานธุรการ งานเอกสาร หรืองานประสานงานโครงการจะพิจารณาเป็นพิเศษ</li>
+          <li>สามารถใช้งาน Microsoft Office เช่น Word, Excel และ PowerPoint ได้ดี</li>
+          <li>หากสามารถใช้งาน Google Workspace หรือโปรแกรมจัดการเอกสารอื่น ๆ ได้จะพิจารณาเป็นพิเศษ</li>
+          <li>มีทักษะในการจัดทำเอกสารและจัดเก็บข้อมูลอย่างเป็นระบบ</li>
+          <li>มีความละเอียดรอบคอบและสามารถตรวจสอบข้อมูลและเอกสารได้ดี</li>
+          <li>มีทักษะในการสื่อสารและประสานงานกับบุคคลหลายฝ่าย</li>
+          <li>สามารถจัดลำดับความสำคัญและบริหารจัดการงานหลายอย่างพร้อมกันได้</li>
+          <li>มีความรับผิดชอบ ตรงต่อเวลา และสามารถทำงานตามกำหนดเวลาของโครงการได้</li>
+          <li>สามารถทำงานเป็นทีมและมีมนุษยสัมพันธ์ที่ดี</li>
+          <li>หากสามารถเดินทางไปปฏิบัติงานตามพื้นที่โครงการหรือต่างจังหวัดได้จะพิจารณาเป็นพิเศษ</li>
+        </ul>
+      `,
+      en: `
+        <p><strong>Responsibilities</strong></p>
+        <ul>
+          <li>Prepare, organize, maintain, and manage project-related documents in a systematic manner.</li>
+          <li>Prepare letters, reports, forms, correspondence, and other documents for internal and external communication.</li>
+          <li>Record project information and prepare project progress reports as assigned.</li>
+          <li>Maintain physical and electronic document filing systems to ensure documents are properly organized and easy to retrieve.</li>
+          <li>Coordinate with project teams, contractors, clients, and relevant departments.</li>
+          <li>Prepare documents and materials for meetings, take meeting minutes, and follow up on related action items.</li>
+          <li>Review documents for completeness and accuracy before submission to relevant parties.</li>
+          <li>Manage meeting schedules, appointments, and general administrative tasks for the project team.</li>
+          <li>Prepare and maintain expense records and other project-support documentation as assigned.</li>
+          <li>Provide administrative and documentation support to the Project Manager and project team.</li>
+          <li>Perform other administrative and project-related duties as assigned.</li>
+        </ul>
+
+        <p><strong>Requirements</strong></p>
+        <ul>
+          <li>Bachelor's degree in any field.</li>
+          <li>Experience in administration, document control, or project coordination is an advantage.</li>
+          <li>Good working knowledge of Microsoft Office, particularly Word, Excel, and PowerPoint.</li>
+          <li>Experience with Google Workspace or other document management tools is an advantage.</li>
+          <li>Strong organizational skills and the ability to manage documents systematically.</li>
+          <li>High attention to detail with good document and data verification skills.</li>
+          <li>Good communication and coordination skills with the ability to work with multiple stakeholders.</li>
+          <li>Ability to manage multiple tasks, prioritize responsibilities, and meet deadlines.</li>
+          <li>Responsible, punctual, organized, and able to work effectively under project deadlines.</li>
+          <li>Good interpersonal and teamwork skills.</li>
+          <li>Willing and able to travel to project sites or work in other provinces is an advantage.</li>
+        </ul>
+      `,
     },
   },
 ];
@@ -159,8 +349,12 @@ const LOCALES: Locale[] = ['th', 'en'];
 
 const HEADER_NAME: Record<Locale, string> = { th: 'หน้าแรก', en: 'Home' };
 
-async function uploadAsset(relativePath: string, altText: Record<Locale, string>): Promise<Media> {
-  const absolute = path.join(ASSETS, relativePath);
+async function uploadAsset(
+  relativePath: string,
+  altText: Record<Locale, string>,
+  base: string = ASSETS,
+): Promise<Media> {
+  const absolute = path.join(base, relativePath);
   const buffer = await fs.readFile(absolute);
   const ext = path.extname(absolute).toLowerCase();
   const mime = MIME_BY_EXT[ext];
@@ -175,6 +369,22 @@ async function uploadAsset(relativePath: string, altText: Record<Locale, string>
     },
     { alternativeText: altText.en, name: path.basename(absolute, ext) },
   );
+}
+
+// A missing PDF is not a failure: the seed has to keep working on a checkout that does not carry
+// one, so the company profile row is simply left empty in that case.
+async function uploadProfile(): Promise<Media | null> {
+  try {
+    return await uploadAsset(
+      PROFILE_PDF,
+      { th: 'โปรไฟล์บริษัท CECO', en: 'CECO company profile' },
+      DOCUMENTS,
+    );
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
+    console.log(`[seed:content] No ${PROFILE_PDF} in ${DOCUMENTS}; the profile row is left empty.`);
+    return null;
+  }
 }
 
 async function alreadySeeded(): Promise<boolean> {
@@ -281,7 +491,7 @@ async function seedRecruitments(): Promise<void> {
   }
 }
 
-async function seedDocuments(logo: Media): Promise<void> {
+async function seedDocuments(logo: Media, profile: Media | null): Promise<void> {
   await documentService.createDocument({
     kind: 'logo',
     name: 'Site logo',
@@ -292,18 +502,24 @@ async function seedDocuments(logo: Media): Promise<void> {
     isPublished: true,
   });
 
-  // The company profile PDF was only ever in the old CMS. The row is created so the footer has
-  // something to point at; the frontend hides the download button until a file is attached.
+  // The row is created either way so the footer has something to point at; the frontend hides the
+  // download button until a file is attached.
   await documentService.createDocument({
     kind: 'pdf',
     name: 'Profile',
-    description: 'Company profile PDF — upload the file in /admin/documents',
+    description: profile
+      ? 'Company profile PDF — replace it in /admin/documents'
+      : 'Company profile PDF — upload the file in /admin/documents',
     locale: null,
-    fileId: null,
+    fileId: profile ? profile.id : null,
     position: 0,
     isPublished: true,
   });
-  console.log('[seed:content] Logo attached; company profile row created without a file.');
+  console.log(
+    profile
+      ? `[seed:content] Logo attached; company profile attached from ${PROFILE_PDF}.`
+      : '[seed:content] Logo attached; company profile row created without a file.',
+  );
 }
 
 async function main(): Promise<void> {
@@ -324,12 +540,13 @@ async function main(): Promise<void> {
     RECENT_PROJECTS.map((project) => uploadAsset(project.file, project.title)),
   );
   const logo = await uploadAsset('output/CECO-LOGO.webp', { th: 'โลโก้ CECO', en: 'CECO logo' });
+  const profile = await uploadProfile();
 
   await seedHeaders(heroImages);
   await seedRecentProjects(projectImages);
   await seedExperiences();
   await seedRecruitments();
-  await seedDocuments(logo);
+  await seedDocuments(logo, profile);
 
   // Confirms the carousel the home page will actually receive
   const headers = new HeaderRepository();
